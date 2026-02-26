@@ -1,0 +1,8 @@
+node_modules/
+dist/
+build/
+.electrobun/
+*.db
+*.db-journal
+.DS_Store
+*.log
