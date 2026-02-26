@@ -6,6 +6,7 @@ import { getMCPConfig, saveMCPServer, deleteMCPServer, toggleMCPServer } from ".
 import { getPromptFile, savePromptFile } from "./config/prompts";
 import { startCLI, stopCLI, getCLIProcess, listCLIProcesses, stopAll } from "./config/process";
 import { exportToFile, importFromFile, getDefaultExportPath } from "./config/export";
+import { startWatching, stopWatching } from "./config/watcher";
 
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_URL = `http://localhost:${DEV_SERVER_PORT}`;
@@ -138,9 +139,25 @@ tray.on("tray-item-clicked", (e) => {
 // Initialize tray menu
 updateTrayMenu();
 
+// Watch config files for external changes
+startWatching((_path, _cli, type) => {
+	try {
+		if (type === "provider") {
+			mainWindow.webview.rpc.send.refreshProviders({});
+			mainWindow.webview.rpc.send.refreshStatus({});
+			updateTrayMenu();
+		} else if (type === "mcp") {
+			mainWindow.webview.rpc.send.refreshMCP({});
+		} else if (type === "prompt") {
+			mainWindow.webview.rpc.send.refreshPrompts({});
+		}
+	} catch 
+});
+
 // Graceful shutdown
 Electrobun.events.on("before-quit", async () => {
 	stopAll();
+	stopWatching();
 });
 
 console.log("ClawFlow Desk started!");

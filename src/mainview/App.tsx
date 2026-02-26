@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSnapshot } from "valtio";
 import { store, actions } from "./store";
+import { initTheme } from "./store/theme";
 import { Sidebar } from "./components/Sidebar";
 import { ProviderList } from "./components/ProviderList";
 import { ProviderForm } from "./components/ProviderForm";
@@ -15,6 +16,7 @@ function App() {
 	const snap = useSnapshot(store);
 
 	useEffect(() => {
+		initTheme();
 		actions.init();
 	}, []);
 

@@ -194,4 +194,10 @@ if (typeof window !== "undefined") {
 	window.addEventListener("clawflow:refresh-status", () => {
 		actions.loadCLIStatus();
 	});
+	window.addEventListener("clawflow:refresh-mcp", () => {
+		actions.loadMCPConfig();
+	});
+	window.addEventListener("clawflow:refresh-prompts", () => {
+		actions.loadPromptFile();
+	});
 }

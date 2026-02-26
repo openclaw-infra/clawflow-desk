@@ -2,6 +2,7 @@ import { useSnapshot } from "valtio";
 import { store, actions } from "../store";
 import { Terminal, Plus, Sparkles, Cpu, Bot, Server, FileText, Key, Activity, Settings } from "lucide-react";
 import { cn } from "../lib/utils";
+import { ThemeToggle } from "./ThemeToggle";
 import type { CLIType } from "../types";
 
 const CLI_ITEMS: { id: CLIType; label: string; icon: typeof Terminal }[] = [
@@ -82,7 +83,8 @@ export function Sidebar() {
 				</div>
 			</nav>
 
-			<div className="p-3 border-t border-border">
+			<div className="p-3 border-t border-border space-y-3">
+				<ThemeToggle />
 				<button
 					onClick={actions.showAddProvider}
 					className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
