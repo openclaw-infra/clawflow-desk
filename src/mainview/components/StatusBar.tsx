@@ -1,34 +1,28 @@
-import { useState, useEffect } from "react";
-import type { CLIStatus } from "../types";
+import { useSnapshot } from "valtio";
+import { store } from "../store";
+import { CheckCircle2, XCircle } from "lucide-react";
 
 export function StatusBar() {
-	const [status, setStatus] = useState<CLIStatus>({
-		claude: { installed: false, configPath: "~/.claude/settings.json" },
-		codex: { installed: false, configPath: "~/.codex/auth.json" },
-		gemini: { installed: false, configPath: "~/.gemini/.env" },
-	});
-
-	useEffect(() => {
-		// TODO: IPC call to get CLI status
-		// const data = await rpc.invoke("config:getCLIStatus");
-		// setStatus(data);
-	}, []);
+	const snap = useSnapshot(store);
 
 	const items = [
-		{ key: "claude", label: "Claude", icon: "🟠", ...status.claude },
-		{ key: "codex", label: "Codex", icon: "🟢", ...status.codex },
-		{ key: "gemini", label: "Gemini", icon: "🔵", ...status.gemini },
+		{ key: "claude", label: "Claude", ...snap.cliStatus.claude },
+		{ key: "codex", label: "Codex", ...snap.cliStatus.codex },
+		{ key: "gemini", label: "Gemini", ...snap.cliStatus.gemini },
 	];
 
 	return (
-		<footer className="flex items-center gap-4 px-4 py-2 border-t border-[var(--border)] bg-[var(--secondary)] text-xs text-[var(--muted-foreground)]">
+		<footer className="flex items-center gap-4 px-4 py-2 border-t border-border bg-secondary text-xs text-muted-foreground">
 			{items.map((item) => (
 				<div key={item.key} className="flex items-center gap-1.5">
-					<span>{item.icon}</span>
+					{item.installed ? (
+						<CheckCircle2 className="w-3 h-3 text-success" />
+					) : (
+						<XCircle className="w-3 h-3 text-destructive" />
+					)}
 					<span>{item.label}</span>
-					<span className={`w-1.5 h-1.5 rounded-full ${item.installed ? "bg-[var(--success)]" : "bg-[var(--destructive)]"}`} />
 					{item.activeProvider && (
-						<span className="text-[var(--foreground)]">{item.activeProvider}</span>
+						<span className="text-foreground font-medium">{item.activeProvider}</span>
 					)}
 				</div>
 			))}

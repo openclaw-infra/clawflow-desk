@@ -1,54 +1,59 @@
+import { useSnapshot } from "valtio";
+import { store, actions } from "../store";
+import { Terminal, Plus, Sparkles, Cpu, Bot } from "lucide-react";
+import { cn } from "../lib/utils";
 import type { CLIType } from "../types";
 
-const CLI_ITEMS: { id: CLIType; label: string; icon: string; color: string }[] = [
-	{ id: "claude", label: "Claude Code", icon: "🟠", color: "text-orange-500" },
-	{ id: "codex", label: "Codex", icon: "🟢", color: "text-green-500" },
-	{ id: "gemini", label: "Gemini", icon: "🔵", color: "text-blue-500" },
+const CLI_ITEMS: { id: CLIType; label: string; icon: typeof Terminal }[] = [
+	{ id: "claude", label: "Claude Code", icon: Bot },
+	{ id: "codex", label: "Codex", icon: Cpu },
+	{ id: "gemini", label: "Gemini", icon: Sparkles },
 ];
 
-interface SidebarProps {
-	activeCLI: CLIType;
-	onSelectCLI: (cli: CLIType) => void;
-	onAdd: () => void;
-}
+export function Sidebar() {
+	const snap = useSnapshot(store);
 
-export function Sidebar({ activeCLI, onSelectCLI, onAdd }: SidebarProps) {
 	return (
-		<aside className="w-56 border-r border-[var(--border)] bg-[var(--secondary)] flex flex-col">
-			{/* Logo */}
-			<div className="p-4 border-b border-[var(--border)]">
-				<h1 className="text-lg font-semibold tracking-tight">⚡ ClawFlow</h1>
-				<p className="text-xs text-[var(--muted-foreground)] mt-0.5">AI CLI Manager</p>
+		<aside className="w-56 border-r border-border bg-secondary flex flex-col">
+			<div className="p-4 border-b border-border">
+				<h1 className="text-lg font-semibold tracking-tight flex items-center gap-2">
+					<Terminal className="w-5 h-5" />
+					ClawFlow
+				</h1>
+				<p className="text-xs text-muted-foreground mt-0.5">AI CLI Manager</p>
 			</div>
 
-			{/* CLI List */}
 			<nav className="flex-1 p-2 space-y-1">
-				<p className="px-3 py-2 text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">
+				<p className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
 					CLI Tools
 				</p>
-				{CLI_ITEMS.map((item) => (
-					<button
-						key={item.id}
-						onClick={() => onSelectCLI(item.id)}
-						className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-							activeCLI === item.id
-								? "bg-[var(--background)] text-[var(--foreground)] shadow-sm"
-								: "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)]/50"
-						}`}
-					>
-						<span className="text-base">{item.icon}</span>
-						{item.label}
-					</button>
-				))}
+				{CLI_ITEMS.map((item) => {
+					const Icon = item.icon;
+					return (
+						<button
+							key={item.id}
+							onClick={() => actions.selectCLI(item.id)}
+							className={cn(
+								"w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+								snap.activeCLI === item.id
+									? "bg-background text-foreground shadow-sm"
+									: "text-muted-foreground hover:text-foreground hover:bg-background/50"
+							)}
+						>
+							<Icon className="w-4 h-4" />
+							{item.label}
+						</button>
+					);
+				})}
 			</nav>
 
-			{/* Add Button */}
-			<div className="p-3 border-t border-[var(--border)]">
+			<div className="p-3 border-t border-border">
 				<button
-					onClick={onAdd}
-					className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-opacity"
+					onClick={actions.showAddProvider}
+					className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
 				>
-					<span>+</span> Add Provider
+					<Plus className="w-4 h-4" />
+					Add Provider
 				</button>
 			</div>
 		</aside>
