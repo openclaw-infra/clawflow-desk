@@ -4,6 +4,9 @@ import { store, actions } from "./store";
 import { Sidebar } from "./components/Sidebar";
 import { ProviderList } from "./components/ProviderList";
 import { ProviderForm } from "./components/ProviderForm";
+import { MCPList } from "./components/MCPList";
+import { MCPForm } from "./components/MCPForm";
+import { PromptsEditor } from "./components/PromptsEditor";
 import { StatusBar } from "./components/StatusBar";
 
 function App() {
@@ -13,15 +16,31 @@ function App() {
 		actions.init();
 	}, []);
 
+	const renderContent = () => {
+		switch (snap.view) {
+			case "providers":
+				return <ProviderList />;
+			case "add-provider":
+			case "edit-provider":
+				return <ProviderForm />;
+			case "mcp":
+				return <MCPList />;
+			case "add-mcp":
+			case "edit-mcp":
+				return <MCPForm />;
+			case "prompts":
+				return <PromptsEditor />;
+			default:
+				return <ProviderList />;
+		}
+	};
+
 	return (
 		<div className="flex h-screen overflow-hidden">
 			<Sidebar />
 			<main className="flex-1 flex flex-col overflow-hidden">
 				<div className="flex-1 overflow-y-auto p-6">
-					{snap.view === "providers" && <ProviderList />}
-					{(snap.view === "add-provider" || snap.view === "edit-provider") && (
-						<ProviderForm />
-					)}
+					{renderContent()}
 				</div>
 				<StatusBar />
 			</main>

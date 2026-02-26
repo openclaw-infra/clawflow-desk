@@ -1,6 +1,6 @@
 import { useSnapshot } from "valtio";
 import { store, actions } from "../store";
-import { Terminal, Plus, Sparkles, Cpu, Bot } from "lucide-react";
+import { Terminal, Plus, Sparkles, Cpu, Bot, Server, FileText, Key } from "lucide-react";
 import { cn } from "../lib/utils";
 import type { CLIType } from "../types";
 
@@ -10,8 +10,17 @@ const CLI_ITEMS: { id: CLIType; label: string; icon: typeof Terminal }[] = [
 	{ id: "gemini", label: "Gemini", icon: Sparkles },
 ];
 
+const NAV_ITEMS: { view: "providers" | "mcp" | "prompts"; label: string; icon: typeof Terminal }[] = [
+	{ view: "providers", label: "Providers", icon: Key },
+	{ view: "mcp", label: "MCP Servers", icon: Server },
+	{ view: "prompts", label: "Prompts", icon: FileText },
+];
+
 export function Sidebar() {
 	const snap = useSnapshot(store);
+	const currentView = snap.view.startsWith("add-") || snap.view.startsWith("edit-")
+		? snap.view.includes("mcp") ? "mcp" : "providers"
+		: snap.view;
 
 	return (
 		<aside className="w-56 border-r border-border bg-secondary flex flex-col">
@@ -23,7 +32,7 @@ export function Sidebar() {
 				<p className="text-xs text-muted-foreground mt-0.5">AI CLI Manager</p>
 			</div>
 
-			<nav className="flex-1 p-2 space-y-1">
+			<nav className="flex-1 p-2 space-y-1 overflow-y-auto">
 				<p className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
 					CLI Tools
 				</p>
@@ -45,6 +54,30 @@ export function Sidebar() {
 						</button>
 					);
 				})}
+
+				<div className="pt-3">
+					<p className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+						Manage
+					</p>
+					{NAV_ITEMS.map((item) => {
+						const Icon = item.icon;
+						return (
+							<button
+								key={item.view}
+								onClick={() => actions.showView(item.view)}
+								className={cn(
+									"w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+									currentView === item.view
+										? "bg-primary/10 text-primary"
+										: "text-muted-foreground hover:text-foreground hover:bg-background/50"
+								)}
+							>
+								<Icon className="w-4 h-4" />
+								{item.label}
+							</button>
+						);
+					})}
+				</div>
 			</nav>
 
 			<div className="p-3 border-t border-border">

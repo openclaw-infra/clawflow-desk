@@ -1,12 +1,15 @@
 import { proxy } from "valtio";
 import { api } from "../lib/api";
-import type { Provider, CLIType, CLIStatus } from "../types";
+import type { Provider, CLIType, CLIStatus, MCPServer, MCPConfig, PromptFile } from "../types";
 
 interface AppState {
 	activeCLI: CLIType;
-	view: "providers" | "add-provider" | "edit-provider";
+	view: "providers" | "add-provider" | "edit-provider" | "mcp" | "add-mcp" | "edit-mcp" | "prompts";
 	editingProvider: Provider | null;
+	editingMCP: MCPServer | null;
 	providers: Provider[];
+	mcpConfig: MCPConfig | null;
+	promptFile: PromptFile | null;
 	cliStatus: CLIStatus;
 	loading: boolean;
 }
@@ -15,7 +18,10 @@ export const store = proxy<AppState>({
 	activeCLI: "claude",
 	view: "providers",
 	editingProvider: null,
+	editingMCP: null,
 	providers: [],
+	mcpConfig: null,
+	promptFile: null,
 	cliStatus: {
 		claude: { installed: false, configPath: "~/.claude/settings.json" },
 		codex: { installed: false, configPath: "~/.codex/auth.json" },
@@ -25,12 +31,21 @@ export const store = proxy<AppState>({
 });
 
 export const actions = {
+	// Navigation
 	selectCLI(cli: CLIType) {
 		store.activeCLI = cli;
 		store.view = "providers";
 		store.editingProvider = null;
+		store.editingMCP = null;
 	},
 
+	showView(view: AppState["view"]) {
+		store.view = view;
+		store.editingProvider = null;
+		store.editingMCP = null;
+	},
+
+	// Provider actions
 	showAddProvider() {
 		store.editingProvider = null;
 		store.view = "add-provider";
@@ -43,7 +58,12 @@ export const actions = {
 
 	backToList() {
 		store.editingProvider = null;
-		store.view = "providers";
+		store.editingMCP = null;
+		if (store.view === "add-mcp" || store.view === "edit-mcp") {
+			store.view = "mcp";
+		} else {
+			store.view = "providers";
+		}
 	},
 
 	async loadProviders() {
@@ -59,11 +79,7 @@ export const actions = {
 
 	async saveProvider(provider: Omit<Provider, "createdAt">) {
 		try {
-			const saved = await api.saveProvider({
-				...provider,
-				createdAt: Date.now(),
-			});
-			// Reload from backend
+			await api.saveProvider({ ...provider, createdAt: Date.now() });
 			await actions.loadProviders();
 			store.view = "providers";
 			store.editingProvider = null;
@@ -90,6 +106,73 @@ export const actions = {
 		}
 	},
 
+	// MCP actions
+	showAddMCP() {
+		store.editingMCP = null;
+		store.view = "add-mcp";
+	},
+
+	showEditMCP(server: MCPServer) {
+		store.editingMCP = server;
+		store.view = "edit-mcp";
+	},
+
+	async loadMCPConfig() {
+		try {
+			store.mcpConfig = await api.getMCPConfig(store.activeCLI);
+		} catch (e) {
+			console.error("Failed to load MCP config:", e);
+		}
+	},
+
+	async saveMCPServer(server: MCPServer) {
+		try {
+			await api.saveMCPServer(store.activeCLI, server);
+			await actions.loadMCPConfig();
+			store.view = "mcp";
+			store.editingMCP = null;
+		} catch (e) {
+			console.error("Failed to save MCP server:", e);
+		}
+	},
+
+	async deleteMCPServer(name: string) {
+		try {
+			await api.deleteMCPServer(store.activeCLI, name);
+			await actions.loadMCPConfig();
+		} catch (e) {
+			console.error("Failed to delete MCP server:", e);
+		}
+	},
+
+	async toggleMCPServer(name: string, disabled: boolean) {
+		try {
+			await api.toggleMCPServer(store.activeCLI, name, disabled);
+			await actions.loadMCPConfig();
+		} catch (e) {
+			console.error("Failed to toggle MCP server:", e);
+		}
+	},
+
+	// Prompts actions
+	async loadPromptFile() {
+		try {
+			store.promptFile = await api.getPromptFile(store.activeCLI);
+		} catch (e) {
+			console.error("Failed to load prompt file:", e);
+		}
+	},
+
+	async savePromptFile(content: string) {
+		try {
+			await api.savePromptFile(store.activeCLI, content);
+			await actions.loadPromptFile();
+		} catch (e) {
+			console.error("Failed to save prompt file:", e);
+		}
+	},
+
+	// CLI status
 	async loadCLIStatus() {
 		try {
 			store.cliStatus = await api.getCLIStatus();
