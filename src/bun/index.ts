@@ -4,6 +4,8 @@ import type { ClawFlowRPC } from "../shared/types";
 import { ConfigManager } from "./config/manager";
 import { getMCPConfig, saveMCPServer, deleteMCPServer, toggleMCPServer } from "./config/mcp";
 import { getPromptFile, savePromptFile } from "./config/prompts";
+import { startCLI, stopCLI, getCLIProcess, listCLIProcesses, stopAll } from "./config/process";
+import { exportToFile, importFromFile, getDefaultExportPath } from "./config/export";
 
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_URL = `http://localhost:${DEV_SERVER_PORT}`;
@@ -31,6 +33,18 @@ const rpc = BrowserView.defineRPC<ClawFlowRPC>({
 			// Prompts management
 			getPromptFile: ({ cli }) => getPromptFile(cli),
 			savePromptFile: ({ cli, content }) => savePromptFile(cli, content),
+			// Process management
+			startCLI: ({ cli, args }) => startCLI(cli as any, args),
+			stopCLI: ({ cli }) => stopCLI(cli as any),
+			getCLIProcess: ({ cli }) => getCLIProcess(cli as any),
+			listCLIProcesses: () => listCLIProcesses(),
+			// Import/Export
+			exportConfig: ({ filePath }) => {
+				const path = filePath || getDefaultExportPath();
+				exportToFile(configManager.getProviders(), path);
+				return path;
+			},
+			importConfig: ({ filePath }) => importFromFile(filePath),
 		},
 		messages: {},
 	},
@@ -126,7 +140,7 @@ updateTrayMenu();
 
 // Graceful shutdown
 Electrobun.events.on("before-quit", async () => {
-	// ConfigManager uses SQLite, auto-closes
+	stopAll();
 });
 
 console.log("ClawFlow Desk started!");

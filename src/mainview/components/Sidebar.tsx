@@ -1,6 +1,6 @@
 import { useSnapshot } from "valtio";
 import { store, actions } from "../store";
-import { Terminal, Plus, Sparkles, Cpu, Bot, Server, FileText, Key } from "lucide-react";
+import { Terminal, Plus, Sparkles, Cpu, Bot, Server, FileText, Key, Activity, Settings } from "lucide-react";
 import { cn } from "../lib/utils";
 import type { CLIType } from "../types";
 
@@ -10,10 +10,12 @@ const CLI_ITEMS: { id: CLIType; label: string; icon: typeof Terminal }[] = [
 	{ id: "gemini", label: "Gemini", icon: Sparkles },
 ];
 
-const NAV_ITEMS: { view: "providers" | "mcp" | "prompts"; label: string; icon: typeof Terminal }[] = [
+const NAV_ITEMS: { view: "providers" | "mcp" | "prompts" | "processes" | "settings"; label: string; icon: typeof Terminal }[] = [
 	{ view: "providers", label: "Providers", icon: Key },
 	{ view: "mcp", label: "MCP Servers", icon: Server },
 	{ view: "prompts", label: "Prompts", icon: FileText },
+	{ view: "processes", label: "Processes", icon: Activity },
+	{ view: "settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar() {

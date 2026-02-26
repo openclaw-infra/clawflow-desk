@@ -41,4 +41,12 @@ export const api = {
 	// Prompts
 	getPromptFile: (cli: string) => electroview.rpc.request.getPromptFile({ cli }),
 	savePromptFile: (cli: string, content: string) => electroview.rpc.request.savePromptFile({ cli, content }),
+	// Process
+	startCLI: (cli: string, args?: string[]) => electroview.rpc.request.startCLI({ cli, args }),
+	stopCLI: (cli: string) => electroview.rpc.request.stopCLI({ cli }),
+	getCLIProcess: (cli: string) => electroview.rpc.request.getCLIProcess({ cli }),
+	listCLIProcesses: () => electroview.rpc.request.listCLIProcesses({}),
+	// Export/Import
+	exportConfig: (filePath?: string) => electroview.rpc.request.exportConfig({ filePath }),
+	importConfig: (filePath: string) => electroview.rpc.request.importConfig({ filePath }),
 };

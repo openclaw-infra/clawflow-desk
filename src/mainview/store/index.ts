@@ -4,7 +4,7 @@ import type { Provider, CLIType, CLIStatus, MCPServer, MCPConfig, PromptFile } f
 
 interface AppState {
 	activeCLI: CLIType;
-	view: "providers" | "add-provider" | "edit-provider" | "mcp" | "add-mcp" | "edit-mcp" | "prompts";
+	view: "providers" | "add-provider" | "edit-provider" | "mcp" | "add-mcp" | "edit-mcp" | "prompts" | "processes" | "settings";
 	editingProvider: Provider | null;
 	editingMCP: MCPServer | null;
 	providers: Provider[];

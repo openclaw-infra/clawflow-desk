@@ -42,6 +42,24 @@ export interface PromptFile {
 	exists: boolean;
 }
 
+// === Process Types ===
+export interface CLIProcess {
+	cli: "claude" | "codex" | "gemini";
+	pid: number;
+	status: "running" | "stopped" | "error";
+	startedAt: number;
+	command: string;
+}
+
+// === Export Types ===
+export interface ExportData {
+	version: 1;
+	exportedAt: number;
+	providers: Provider[];
+	mcp: { claude: MCPServer[]; codex: MCPServer[]; gemini: MCPServer[] };
+	prompts: { claude: string; codex: string; gemini: string };
+}
+
 // === RPC Schema ===
 export type ClawFlowRPC = {
 	bun: RPCSchema<{
@@ -61,6 +79,14 @@ export type ClawFlowRPC = {
 			// Prompts management
 			getPromptFile: { params: { cli: string }; response: PromptFile };
 			savePromptFile: { params: { cli: string; content: string }; response: void };
+			// Process management
+			startCLI: { params: { cli: string; args?: string[] }; response: CLIProcess };
+			stopCLI: { params: { cli: string }; response: boolean };
+			getCLIProcess: { params: { cli: string }; response: CLIProcess | null };
+			listCLIProcesses: { params: {}; response: CLIProcess[] };
+			// Import/Export
+			exportConfig: { params: { filePath?: string }; response: string };
+			importConfig: { params: { filePath: string }; response: ExportData };
 		};
 		messages: {
 			providerChanged: { cli: string; providerId: string };

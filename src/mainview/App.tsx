@@ -7,6 +7,8 @@ import { ProviderForm } from "./components/ProviderForm";
 import { MCPList } from "./components/MCPList";
 import { MCPForm } from "./components/MCPForm";
 import { PromptsEditor } from "./components/PromptsEditor";
+import { ProcessManager } from "./components/ProcessManager";
+import { Settings } from "./components/Settings";
 import { StatusBar } from "./components/StatusBar";
 
 function App() {
@@ -30,6 +32,10 @@ function App() {
 				return <MCPForm />;
 			case "prompts":
 				return <PromptsEditor />;
+			case "processes":
+				return <ProcessManager />;
+			case "settings":
+				return <Settings />;
 			default:
 				return <ProviderList />;
 		}
