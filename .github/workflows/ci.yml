@@ -35,7 +35,7 @@ jobs:
           - os: macos-latest
             target: macos-arm64
             artifact: ClawFlow-Desk-macOS-arm64
-          - os: macos-13
+          - os: macos-14
             target: macos-x64
             artifact: ClawFlow-Desk-macOS-x64
           - os: ubuntu-latest
@@ -65,13 +65,9 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
-        if: success()
+        if: always()
         with:
           name: ${{ matrix.artifact }}
-          path: |
-            build/**/*.zip
-            build/**/*.dmg
-            build/**/*.AppImage
-            build/**/*.exe
-            build/**/*.msi
+          path: build/
+          if-no-files-found: ignore
           retention-days: 7
