@@ -4,6 +4,8 @@
 
 **Ultra-lightweight AI CLI configuration manager**
 
+<img src="docs/screenshot.png" alt="ClawFlow Desk" width="800">
+
 Manage Claude Code / Codex / Gemini CLI providers, models, and configs from one place.
 
 Built with [Electrobun](https://electrobun.dev) — 14MB bundle, <50ms startup.
