@@ -25,7 +25,7 @@ const url = await getMainViewUrl();
 
 // Create main window
 const mainWindow = new BrowserWindow({
-	title: "OpenDesk",
+	title: "ClawFlow Desk",
 	url,
 	frame: {
 		width: 960,
@@ -60,4 +60,4 @@ mainWindow.rpc.handle("config:getCLIStatus", async () => {
 	return configManager.getCLIStatus();
 });
 
-console.log("OpenDesk started!");
+console.log("ClawFlow Desk started!");

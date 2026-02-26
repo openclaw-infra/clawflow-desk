@@ -2,8 +2,8 @@ import type { ElectrobunConfig } from "electrobun";
 
 export default {
 	app: {
-		name: "OpenDesk",
-		identifier: "dev.openclaw.opendesk",
+		name: "ClawFlow Desk",
+		identifier: "dev.openclaw.clawflow-desk",
 		version: "0.1.0",
 	},
 	build: {

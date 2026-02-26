@@ -1,5 +1,5 @@
 {
-	"name": "opendesk",
+	"name": "clawflow-desk",
 	"version": "0.1.0",
 	"description": "Ultra-lightweight AI CLI configuration manager",
 	"scripts": {

@@ -17,7 +17,7 @@ export function Sidebar({ activeCLI, onSelectCLI, onAdd }: SidebarProps) {
 		<aside className="w-56 border-r border-[var(--border)] bg-[var(--secondary)] flex flex-col">
 			{/* Logo */}
 			<div className="p-4 border-b border-[var(--border)]">
-				<h1 className="text-lg font-semibold tracking-tight">⚡ OpenDesk</h1>
+				<h1 className="text-lg font-semibold tracking-tight">⚡ ClawFlow</h1>
 				<p className="text-xs text-[var(--muted-foreground)] mt-0.5">AI CLI Manager</p>
 			</div>
 

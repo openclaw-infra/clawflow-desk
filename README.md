@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ OpenDesk
+# ⚡ ClawFlow Desk
 
 **Ultra-lightweight AI CLI configuration manager**
 
@@ -41,8 +41,8 @@ Built with [Electrobun](https://electrobun.dev) — 14MB bundle, <50ms startup.
 ### Setup
 
 ```bash
-git clone https://github.com/openclaw-infra/opendesk.git
-cd opendesk
+git clone https://github.com/openclaw-infra/clawflow-desk.git
+cd clawflow-desk
 bun install
 ```
 
@@ -65,7 +65,7 @@ bun run build:canary
 ## Architecture
 
 ```
-opendesk/
+clawflow-desk/
 ├── src/
 │   ├── bun/                  # Backend (Bun process)
 │   │   ├── index.ts          # Entry + window + IPC handlers

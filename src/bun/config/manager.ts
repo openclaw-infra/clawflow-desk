@@ -7,8 +7,8 @@ import * as claude from "./claude";
 import * as codex from "./codex";
 import * as gemini from "./gemini";
 
-const OPENDESK_DIR = join(homedir(), ".opendesk");
-const DB_PATH = join(OPENDESK_DIR, "opendesk.db");
+const OPENDESK_DIR = join(homedir(), ".clawflow-desk");
+const DB_PATH = join(OPENDESK_DIR, "clawflow-desk.db");
 
 export class ConfigManager {
 	private db: Database;
