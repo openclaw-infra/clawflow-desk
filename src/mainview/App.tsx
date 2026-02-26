@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { useSnapshot } from "valtio";
-import { store } from "./store";
+import { store, actions } from "./store";
 import { Sidebar } from "./components/Sidebar";
 import { ProviderList } from "./components/ProviderList";
 import { ProviderForm } from "./components/ProviderForm";
@@ -7,6 +8,10 @@ import { StatusBar } from "./components/StatusBar";
 
 function App() {
 	const snap = useSnapshot(store);
+
+	useEffect(() => {
+		actions.init();
+	}, []);
 
 	return (
 		<div className="flex h-screen overflow-hidden">

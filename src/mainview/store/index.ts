@@ -1,15 +1,14 @@
 import { proxy } from "valtio";
+import { api } from "../lib/api";
 import type { Provider, CLIType, CLIStatus } from "../types";
 
 interface AppState {
-	// UI state
 	activeCLI: CLIType;
 	view: "providers" | "add-provider" | "edit-provider";
 	editingProvider: Provider | null;
-
-	// Data
 	providers: Provider[];
 	cliStatus: CLIStatus;
+	loading: boolean;
 }
 
 export const store = proxy<AppState>({
@@ -22,9 +21,9 @@ export const store = proxy<AppState>({
 		codex: { installed: false, configPath: "~/.codex/auth.json" },
 		gemini: { installed: false, configPath: "~/.gemini/.env" },
 	},
+	loading: false,
 });
 
-// Actions
 export const actions = {
 	selectCLI(cli: CLIType) {
 		store.activeCLI = cli;
@@ -48,39 +47,68 @@ export const actions = {
 	},
 
 	async loadProviders() {
-		// TODO: IPC call
-		// const data = await rpc.invoke("config:getProviders");
-		// store.providers = data;
+		try {
+			store.loading = true;
+			store.providers = await api.getProviders();
+		} catch (e) {
+			console.error("Failed to load providers:", e);
+		} finally {
+			store.loading = false;
+		}
 	},
 
 	async saveProvider(provider: Omit<Provider, "createdAt">) {
-		const p: Provider = { ...provider, createdAt: Date.now() };
-		// TODO: IPC call
-		const idx = store.providers.findIndex((x) => x.id === p.id);
-		if (idx >= 0) {
-			store.providers[idx] = p;
-		} else {
-			store.providers.unshift(p);
+		try {
+			const saved = await api.saveProvider({
+				...provider,
+				createdAt: Date.now(),
+			});
+			// Reload from backend
+			await actions.loadProviders();
+			store.view = "providers";
+			store.editingProvider = null;
+		} catch (e) {
+			console.error("Failed to save provider:", e);
 		}
-		store.view = "providers";
-		store.editingProvider = null;
 	},
 
 	async deleteProvider(id: string) {
-		// TODO: IPC call
-		store.providers = store.providers.filter((p) => p.id !== id);
+		try {
+			await api.deleteProvider(id);
+			await actions.loadProviders();
+		} catch (e) {
+			console.error("Failed to delete provider:", e);
+		}
 	},
 
 	async activateProvider(cli: CLIType, id: string) {
-		// TODO: IPC call
-		store.providers = store.providers.map((p) =>
-			p.cli === cli ? { ...p, isActive: p.id === id } : p
-		);
+		try {
+			await api.setActiveProvider(cli, id);
+			await actions.loadProviders();
+		} catch (e) {
+			console.error("Failed to activate provider:", e);
+		}
 	},
 
 	async loadCLIStatus() {
-		// TODO: IPC call
-		// const data = await rpc.invoke("config:getCLIStatus");
-		// store.cliStatus = data;
+		try {
+			store.cliStatus = await api.getCLIStatus();
+		} catch (e) {
+			console.error("Failed to load CLI status:", e);
+		}
+	},
+
+	async init() {
+		await Promise.all([actions.loadProviders(), actions.loadCLIStatus()]);
 	},
 };
+
+// Listen for refresh events from tray actions
+if (typeof window !== "undefined") {
+	window.addEventListener("clawflow:refresh-providers", () => {
+		actions.loadProviders();
+	});
+	window.addEventListener("clawflow:refresh-status", () => {
+		actions.loadCLIStatus();
+	});
+}
