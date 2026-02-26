@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun test src/__tests__/
+
+  build:
+    name: Build (${{ matrix.target }})
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            target: macos-arm64
+            artifact: ClawFlow-Desk-macOS-arm64
+          - os: macos-13
+            target: macos-x64
+            artifact: ClawFlow-Desk-macOS-x64
+          - os: ubuntu-latest
+            target: linux-x64
+            artifact: ClawFlow-Desk-Linux-x64
+          - os: windows-latest
+            target: win-x64
+            artifact: ClawFlow-Desk-Windows-x64
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bunx vite build --config vite.config.ts
+      - run: bunx electrobun build --env stable --targets ${{ matrix.target }}
+        continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: ${{ matrix.artifact }}
+          path: build/**
+          retention-days: 30
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: artifacts/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

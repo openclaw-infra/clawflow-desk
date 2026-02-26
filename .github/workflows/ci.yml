@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run tests
+        run: bun test src/__tests__/
+
+  build:
+    name: Build (${{ matrix.os }})
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            target: macos-arm64
+            artifact: ClawFlow-Desk-macOS-arm64
+          - os: macos-13
+            target: macos-x64
+            artifact: ClawFlow-Desk-macOS-x64
+          - os: ubuntu-latest
+            target: linux-x64
+            artifact: ClawFlow-Desk-Linux-x64
+          - os: windows-latest
+            target: win-x64
+            artifact: ClawFlow-Desk-Windows-x64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build Vite frontend
+        run: bunx vite build --config vite.config.ts
+
+      - name: Build Electrobun app
+        run: bunx electrobun build --env canary --targets ${{ matrix.target }}
+        continue-on-error: true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            build/**/*.zip
+            build/**/*.dmg
+            build/**/*.AppImage
+            build/**/*.exe
+            build/**/*.msi
+          retention-days: 7
