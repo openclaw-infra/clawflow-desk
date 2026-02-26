@@ -4,19 +4,20 @@ import type { Provider, CLIType, CLIStatus, MCPServer, MCPConfig, PromptFile } f
 
 interface AppState {
 	activeCLI: CLIType;
-	view: "providers" | "add-provider" | "edit-provider" | "mcp" | "add-mcp" | "edit-mcp" | "prompts" | "processes" | "settings";
+	view: "terminal" | "providers" | "add-provider" | "edit-provider" | "mcp" | "add-mcp" | "edit-mcp" | "prompts" | "processes" | "settings";
 	editingProvider: Provider | null;
 	editingMCP: MCPServer | null;
 	providers: Provider[];
 	mcpConfig: MCPConfig | null;
 	promptFile: PromptFile | null;
 	cliStatus: CLIStatus;
+	terminalSessions: Record<string, string | null>; // cli -> sessionId
 	loading: boolean;
 }
 
 export const store = proxy<AppState>({
 	activeCLI: "claude",
-	view: "providers",
+	view: "terminal",
 	editingProvider: null,
 	editingMCP: null,
 	providers: [],
@@ -27,6 +28,7 @@ export const store = proxy<AppState>({
 		codex: { installed: false, configPath: "~/.codex/auth.json" },
 		gemini: { installed: false, configPath: "~/.gemini/.env" },
 	},
+	terminalSessions: {},
 	loading: false,
 });
 
@@ -35,6 +37,13 @@ export const actions = {
 	selectCLI(cli: CLIType) {
 		store.activeCLI = cli;
 		store.view = "providers";
+		store.editingProvider = null;
+		store.editingMCP = null;
+	},
+
+	openAgent(cli: CLIType) {
+		store.activeCLI = cli;
+		store.view = "terminal";
 		store.editingProvider = null;
 		store.editingMCP = null;
 	},

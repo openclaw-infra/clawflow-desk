@@ -3,6 +3,7 @@ import { useSnapshot } from "valtio";
 import { store, actions } from "./store";
 import { initTheme } from "./store/theme";
 import { Sidebar } from "./components/Sidebar";
+import { TerminalView } from "./components/TerminalView";
 import { ProviderList } from "./components/ProviderList";
 import { ProviderForm } from "./components/ProviderForm";
 import { MCPList } from "./components/MCPList";
@@ -22,6 +23,8 @@ function App() {
 
 	const renderContent = () => {
 		switch (snap.view) {
+			case "terminal":
+				return <TerminalView cli={snap.activeCLI} active={true} />;
 			case "providers":
 				return <ProviderList />;
 			case "add-provider":
@@ -39,18 +42,26 @@ function App() {
 			case "settings":
 				return <Settings />;
 			default:
-				return <ProviderList />;
+				return <TerminalView cli={snap.activeCLI} active={true} />;
 		}
 	};
+
+	const isTerminal = snap.view === "terminal";
 
 	return (
 		<div className="flex h-screen overflow-hidden">
 			<Sidebar />
 			<main className="flex-1 flex flex-col overflow-hidden">
-				<div className="flex-1 overflow-y-auto p-6">
-					{renderContent()}
-				</div>
-				<StatusBar />
+				{isTerminal ? (
+					renderContent()
+				) : (
+					<>
+						<div className="flex-1 overflow-y-auto p-6">
+							{renderContent()}
+						</div>
+						<StatusBar />
+					</>
+				)}
 			</main>
 		</div>
 	);

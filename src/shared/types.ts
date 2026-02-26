@@ -87,6 +87,11 @@ export type ClawFlowRPC = {
 			// Import/Export
 			exportConfig: { params: { filePath?: string }; response: string };
 			importConfig: { params: { filePath: string }; response: ExportData };
+			// Terminal
+			terminalSpawn: { params: { cli: string }; response: { sessionId: string } };
+			terminalWrite: { params: { sessionId: string; data: string }; response: void };
+			terminalResize: { params: { sessionId: string; cols: number; rows: number }; response: void };
+			terminalKill: { params: { sessionId: string }; response: void };
 		};
 		messages: {
 			providerChanged: { cli: string; providerId: string };
@@ -99,6 +104,9 @@ export type ClawFlowRPC = {
 			refreshStatus: {};
 			refreshMCP: {};
 			refreshPrompts: {};
+			terminalData: { sessionId: string; data: string };
+			terminalExit: { sessionId: string; code: number };
+		};
 		};
 	}>;
 };

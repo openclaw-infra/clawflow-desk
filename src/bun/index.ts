@@ -7,6 +7,7 @@ import { getPromptFile, savePromptFile } from "./config/prompts";
 import { startCLI, stopCLI, getCLIProcess, listCLIProcesses, stopAll } from "./config/process";
 import { exportToFile, importFromFile, getDefaultExportPath } from "./config/export";
 import { startWatching, stopWatching } from "./config/watcher";
+import { terminalSpawn, terminalWrite, terminalResize, terminalKill, killAllTerminals, setTerminalCallbacks } from "./config/terminal";
 
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_URL = `http://localhost:${DEV_SERVER_PORT}`;
@@ -46,6 +47,11 @@ const rpc = BrowserView.defineRPC<ClawFlowRPC>({
 				return path;
 			},
 			importConfig: ({ filePath }) => importFromFile(filePath),
+			// Terminal
+			terminalSpawn: ({ cli }) => terminalSpawn(cli),
+			terminalWrite: ({ sessionId, data }) => terminalWrite(sessionId, data),
+			terminalResize: ({ sessionId, cols, rows }) => terminalResize(sessionId, cols, rows),
+			terminalKill: ({ sessionId }) => terminalKill(sessionId),
 		},
 		messages: {},
 	},
@@ -75,6 +81,19 @@ const mainWindow = new BrowserWindow({
 	rpc,
 	frame: { width: 960, height: 680, x: 200, y: 200 },
 });
+
+// System tray
+const tray = new Tray({
+
+// Wire terminal output to webview
+setTerminalCallbacks(
+	(sessionId, data) => {
+		try { mainWindow.webview.rpc.send.terminalData({ sessionId, data }); } catch {}
+	},
+	(sessionId, code) => {
+		try { mainWindow.webview.rpc.send.terminalExit({ sessionId, code }); } catch {}
+	},
+);
 
 // System tray
 const tray = new Tray({
@@ -158,6 +177,7 @@ startWatching((_path, _cli, type) => {
 Electrobun.events.on("before-quit", async () => {
 	stopAll();
 	stopWatching();
+	killAllTerminals();
 });
 
 console.log("ClawFlow Desk started!");

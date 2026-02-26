@@ -1,29 +1,19 @@
 import { useSnapshot } from "valtio";
 import { store, actions } from "../store";
-import { Terminal, Plus, Sparkles, Cpu, Bot, Server, FileText, Key, Activity, Settings } from "lucide-react";
+import { Terminal, Bot, Cpu, Sparkles, Settings as SettingsIcon } from "lucide-react";
 import { cn } from "../lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import type { CLIType } from "../types";
 
-const CLI_ITEMS: { id: CLIType; label: string; icon: typeof Terminal }[] = [
+const AGENTS: { id: CLIType; label: string; icon: typeof Terminal }[] = [
 	{ id: "claude", label: "Claude Code", icon: Bot },
 	{ id: "codex", label: "Codex", icon: Cpu },
-	{ id: "gemini", label: "Gemini", icon: Sparkles },
-];
-
-const NAV_ITEMS: { view: "providers" | "mcp" | "prompts" | "processes" | "settings"; label: string; icon: typeof Terminal }[] = [
-	{ view: "providers", label: "Providers", icon: Key },
-	{ view: "mcp", label: "MCP Servers", icon: Server },
-	{ view: "prompts", label: "Prompts", icon: FileText },
-	{ view: "processes", label: "Processes", icon: Activity },
-	{ view: "settings", label: "Settings", icon: Settings },
+	{ id: "gemini", label: "Gemini CLI", icon: Sparkles },
 ];
 
 export function Sidebar() {
 	const snap = useSnapshot(store);
-	const currentView = snap.view.startsWith("add-") || snap.view.startsWith("edit-")
-		? snap.view.includes("mcp") ? "mcp" : "providers"
-		: snap.view;
+	const isSettings = snap.view !== "terminal";
 
 	return (
 		<aside className="w-56 border-r border-border bg-secondary flex flex-col">
@@ -37,61 +27,62 @@ export function Sidebar() {
 
 			<nav className="flex-1 p-2 space-y-1 overflow-y-auto">
 				<p className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-					CLI Tools
+					Agents
 				</p>
-				{CLI_ITEMS.map((item) => {
-					const Icon = item.icon;
+				{AGENTS.map((agent) => {
+					const Icon = agent.icon;
+					const isActive = snap.activeCLI === agent.id && snap.view === "terminal";
 					return (
 						<button
-							key={item.id}
-							onClick={() => actions.selectCLI(item.id)}
+							key={agent.id}
+							onClick={() => actions.openAgent(agent.id)}
 							className={cn(
 								"w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-								snap.activeCLI === item.id
+								isActive
 									? "bg-background text-foreground shadow-sm"
 									: "text-muted-foreground hover:text-foreground hover:bg-background/50"
 							)}
 						>
 							<Icon className="w-4 h-4" />
-							{item.label}
+							{agent.label}
+							{snap.terminalSessions[agent.id] && (
+								<span className="ml-auto w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+							)}
 						</button>
 					);
 				})}
 
 				<div className="pt-3">
 					<p className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-						Manage
+						Configure
 					</p>
-					{NAV_ITEMS.map((item) => {
-						const Icon = item.icon;
+					{(["providers", "mcp", "prompts", "settings"] as const).map((view) => {
+						const labels = { providers: "Providers", mcp: "MCP Servers", prompts: "Prompts", settings: "Settings" };
+						const icons = { providers: "🔑", mcp: "🔌", prompts: "📝", settings: "⚙️" };
+						const currentView = snap.view.startsWith("add-") || snap.view.startsWith("edit-")
+							? snap.view.includes("mcp") ? "mcp" : "providers"
+							: snap.view;
 						return (
 							<button
-								key={item.view}
-								onClick={() => actions.showView(item.view)}
+								key={view}
+								onClick={() => actions.showView(view)}
 								className={cn(
 									"w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-									currentView === item.view
+									currentView === view
 										? "bg-primary/10 text-primary"
 										: "text-muted-foreground hover:text-foreground hover:bg-background/50"
 								)}
 							>
-								<Icon className="w-4 h-4" />
-								{item.label}
+								<span className="w-4 text-center">{icons[view]}</span>
+								{labels[view]}
 							</button>
 						);
 					})}
 				</div>
 			</nav>
 
-			<div className="p-3 border-t border-border space-y-3">
+			<div className="p-3 border-t border-border">
 				<ThemeToggle />
-				<button
-					onClick={actions.showAddProvider}
-					className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
-				>
-					<Plus className="w-4 h-4" />
-					Add Provider
-				</button>
 			</div>
 		</aside>
 	);

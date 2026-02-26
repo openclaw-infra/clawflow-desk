@@ -8,17 +8,19 @@
 		"dev:hmr": "concurrently \"bun run hmr\" \"bun run start\"",
 		"hmr": "vite --port 5173",
 		"test": "bun test src/__tests__/",
-		"build:canary": "vite build && electrobun build --env=canary",
-		"test": "bun test src/__tests__/"
+		"build:canary": "vite build && electrobun build --env=canary"
 	},
 	"dependencies": {
+		"@xterm/addon-fit": "^0.11.0",
+		"@xterm/addon-web-links": "^0.12.0",
+		"clsx": "^2.1.1",
 		"electrobun": "latest",
+		"lucide-react": "^0.468.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"tailwind-merge": "^2.6.0",
 		"valtio": "^2.1.0",
-		"lucide-react": "^0.468.0",
-		"clsx": "^2.1.1",
-		"tailwind-merge": "^2.6.0"
+		"xterm": "^5.3.0"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",

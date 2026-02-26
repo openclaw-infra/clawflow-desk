@@ -17,6 +17,12 @@ const rpc = Electroview.defineRPC<ClawFlowRPC>({
 			refreshPrompts: () => {
 				window.dispatchEvent(new CustomEvent("clawflow:refresh-prompts"));
 			},
+			terminalData: ({ sessionId, data }) => {
+				window.dispatchEvent(new CustomEvent("clawflow:terminal-data", { detail: { sessionId, data } }));
+			},
+			terminalExit: ({ sessionId, code }) => {
+				window.dispatchEvent(new CustomEvent("clawflow:terminal-exit", { detail: { sessionId, code } }));
+			},
 		},
 	},
 });
@@ -49,4 +55,9 @@ export const api = {
 	// Export/Import
 	exportConfig: (filePath?: string) => electroview.rpc.request.exportConfig({ filePath }),
 	importConfig: (filePath: string) => electroview.rpc.request.importConfig({ filePath }),
+	// Terminal
+	terminalSpawn: (cli: string) => electroview.rpc.request.terminalSpawn({ cli }),
+	terminalWrite: (sessionId: string, data: string) => electroview.rpc.request.terminalWrite({ sessionId, data }),
+	terminalResize: (sessionId: string, cols: number, rows: number) => electroview.rpc.request.terminalResize({ sessionId, cols, rows }),
+	terminalKill: (sessionId: string) => electroview.rpc.request.terminalKill({ sessionId }),
 };
