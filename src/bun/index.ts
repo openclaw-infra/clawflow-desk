@@ -12,7 +12,7 @@ import { initAgentDB, getAgents, saveAgent, deleteAgent, reorderAgents, buildAge
 
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_URL = `http://localhost:${DEV_SERVER_PORT}`;
-const REMOTE_UI_URL = "https://clawflow-desk.pages.dev";
+const REMOTE_UI_URL = "https://clawflow.empjs.dev";
 
 const configManager = new ConfigManager();
 
