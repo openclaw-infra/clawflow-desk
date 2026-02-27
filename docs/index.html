@@ -33,6 +33,8 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .card h3{font-size:16px;font-weight:600;margin-bottom:8px}
 .card p{font-size:14px;color:var(--muted);line-height:1.5}
 .cli-card{padding:28px;border-radius:12px;border:1px solid var(--border);background:var(--card);text-align:center}
+.cli-card .logo{width:48px;height:48px;margin:0 auto 12px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.cli-card .logo svg{width:28px;height:28px}
 .cli-card .cn{font-size:20px;font-weight:600;margin-bottom:4px}
 .cli-card .cb{font-size:13px;color:var(--muted);margin-bottom:12px}
 .cli-card .cf{text-align:left;font-size:13px;color:var(--muted);font-family:'SF Mono',Monaco,monospace}
@@ -57,7 +59,7 @@ footer a{color:var(--muted)}footer a:hover{color:var(--fg)}
 <div class="lang-sw"><button class="on" id="btn-en" onclick="setLang('en')">EN</button><button id="btn-zh" onclick="setLang('zh')">中文</button></div>
 
 <section class="hero"><div class="container">
-<div class="hero-badge"><span class="dot"></span> <span data-en="v0.1.0 — Open Source" data-zh="v0.1.0 — 开源免费"></span></div>
+<div class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#3b82f6"/></svg> <span data-en="v0.1.0 — Open Source" data-zh="v0.1.0 — 开源免费"></span></div>
 <h1 data-en="Manage your AI CLIs<br>with <em>ClawFlow Desk</em>" data-zh="用 <em>ClawFlow Desk</em><br>管理你的 AI CLI"></h1>
 <p data-en="One app to configure Claude Code, Codex, and Gemini CLI. Switch providers, manage MCP servers, edit prompts — all from a lightweight desktop app." data-zh="一个应用搞定 Claude Code、Codex、Gemini CLI 配置。切换 Provider、管理 MCP 服务器、编辑 Prompt — 全在一个轻量桌面应用里。"></p>
 <div class="hero-actions">
@@ -104,9 +106,9 @@ footer a{color:var(--muted)}footer a:hover{color:var(--fg)}
 <section class="sec"><div class="container">
 <h2 data-en="Supported CLIs" data-zh="支持的 CLI"></h2>
 <div class="grid3">
-<div class="cli-card"><div class="cn">Claude Code</div><div class="cb">by Anthropic</div><div class="cf"><div>~/.claude/settings.json</div><div>~/.claude.json (MCP)</div><div>~/.claude/CLAUDE.md</div></div></div>
-<div class="cli-card"><div class="cn">Codex</div><div class="cb">by OpenAI</div><div class="cf"><div>~/.codex/auth.json</div><div>~/.codex/config.toml (MCP)</div><div>~/.codex/AGENTS.md</div></div></div>
-<div class="cli-card"><div class="cn">Gemini CLI</div><div class="cb">by Google</div><div class="cf"><div>~/.gemini/.env</div><div>~/.gemini/settings.json (MCP)</div><div>~/.gemini/GEMINI.md</div></div></div>
+<div class="cli-card"><div class="logo" style="background:#d9775722"><svg viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#d97757" stroke-width="1.5"/></svg></div><div class="cn">Claude Code</div><div class="cb">by Anthropic</div><div class="cf"><div>~/.claude/settings.json</div><div>~/.claude.json (MCP)</div><div>~/.claude/CLAUDE.md</div></div></div>
+<div class="cli-card"><div class="logo" style="background:#10a37f22"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#10a37f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="cn">Codex</div><div class="cb">by OpenAI</div><div class="cf"><div>~/.codex/auth.json</div><div>~/.codex/config.toml (MCP)</div><div>~/.codex/AGENTS.md</div></div></div>
+<div class="cli-card"><div class="logo" style="background:#4285f422"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="#4285f4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="cn">Gemini CLI</div><div class="cb">by Google</div><div class="cf"><div>~/.gemini/.env</div><div>~/.gemini/settings.json (MCP)</div><div>~/.gemini/GEMINI.md</div></div></div>
 </div>
 </div></section>
 
