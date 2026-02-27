@@ -1,21 +1,29 @@
 import { proxy } from "valtio";
 import { api } from "../lib/api";
-import type { Provider, CLIType, CLIStatus, MCPServer, MCPConfig, PromptFile } from "../types";
+import type { Provider, CLIType, CLIStatus, MCPServer, MCPConfig, PromptFile, AgentInstance } from "../types";
 
 interface AppState {
+	// Agent instances
+	agents: AgentInstance[];
+	activeAgentId: string | null;
+	editingAgent: AgentInstance | null;
+	// Legacy CLI selection (for config pages)
 	activeCLI: CLIType;
-	view: "terminal" | "providers" | "add-provider" | "edit-provider" | "mcp" | "add-mcp" | "edit-mcp" | "prompts" | "processes" | "settings";
+	view: "terminal" | "providers" | "add-provider" | "edit-provider" | "mcp" | "add-mcp" | "edit-mcp" | "prompts" | "processes" | "settings" | "add-agent" | "edit-agent";
 	editingProvider: Provider | null;
 	editingMCP: MCPServer | null;
 	providers: Provider[];
 	mcpConfig: MCPConfig | null;
 	promptFile: PromptFile | null;
 	cliStatus: CLIStatus;
-	terminalSessions: Record<string, string | null>; // cli -> sessionId
+	terminalSessions: Record<string, string | null>; // agentId -> sessionId
 	loading: boolean;
 }
 
 export const store = proxy<AppState>({
+	agents: [],
+	activeAgentId: null,
+	editingAgent: null,
 	activeCLI: "claude",
 	view: "terminal",
 	editingProvider: null,
@@ -33,17 +41,66 @@ export const store = proxy<AppState>({
 });
 
 export const actions = {
-	// Navigation
+	// === Agent Instance actions ===
+	async loadAgents() {
+		try {
+			store.agents = await api.getAgents();
+			if (!store.activeAgentId && store.agents.length > 0) {
+				store.activeAgentId = store.agents[0].id;
+			}
+		} catch (e) {
+			console.error("Failed to load agents:", e);
+		}
+	},
+
+	openAgent(agentId: string) {
+		store.activeAgentId = agentId;
+		store.view = "terminal";
+		store.editingProvider = null;
+		store.editingMCP = null;
+		// Set activeCLI based on agent's CLI type
+		const agent = store.agents.find(a => a.id === agentId);
+		if (agent) store.activeCLI = agent.cli;
+	},
+
+	showAddAgent() {
+		store.editingAgent = null;
+		store.view = "add-agent";
+	},
+
+	showEditAgent(agent: AgentInstance) {
+		store.editingAgent = agent;
+		store.view = "edit-agent";
+	},
+
+	async saveAgent(agent: AgentInstance) {
+		try {
+			await api.saveAgent(agent);
+			await actions.loadAgents();
+			store.view = "terminal";
+			store.activeAgentId = agent.id;
+			store.editingAgent = null;
+		} catch (e) {
+			console.error("Failed to save agent:", e);
+		}
+	},
+
+	async deleteAgentInstance(agentId: string) {
+		try {
+			await api.deleteAgent(agentId);
+			await actions.loadAgents();
+			if (store.activeAgentId === agentId) {
+				store.activeAgentId = store.agents[0]?.id ?? null;
+			}
+		} catch (e) {
+			console.error("Failed to delete agent:", e);
+		}
+	},
+
+	// === Navigation ===
 	selectCLI(cli: CLIType) {
 		store.activeCLI = cli;
 		store.view = "providers";
-		store.editingProvider = null;
-		store.editingMCP = null;
-	},
-
-	openAgent(cli: CLIType) {
-		store.activeCLI = cli;
-		store.view = "terminal";
 		store.editingProvider = null;
 		store.editingMCP = null;
 	},
@@ -54,7 +111,7 @@ export const actions = {
 		store.editingMCP = null;
 	},
 
-	// Provider actions
+	// === Provider actions ===
 	showAddProvider() {
 		store.editingProvider = null;
 		store.view = "add-provider";
@@ -68,8 +125,11 @@ export const actions = {
 	backToList() {
 		store.editingProvider = null;
 		store.editingMCP = null;
+		store.editingAgent = null;
 		if (store.view === "add-mcp" || store.view === "edit-mcp") {
 			store.view = "mcp";
+		} else if (store.view === "add-agent" || store.view === "edit-agent") {
+			store.view = "terminal";
 		} else {
 			store.view = "providers";
 		}
@@ -115,7 +175,7 @@ export const actions = {
 		}
 	},
 
-	// MCP actions
+	// === MCP actions ===
 	showAddMCP() {
 		store.editingMCP = null;
 		store.view = "add-mcp";
@@ -163,7 +223,7 @@ export const actions = {
 		}
 	},
 
-	// Prompts actions
+	// === Prompts actions ===
 	async loadPromptFile() {
 		try {
 			store.promptFile = await api.getPromptFile(store.activeCLI);
@@ -181,7 +241,7 @@ export const actions = {
 		}
 	},
 
-	// CLI status
+	// === CLI status ===
 	async loadCLIStatus() {
 		try {
 			store.cliStatus = await api.getCLIStatus();
@@ -190,23 +250,17 @@ export const actions = {
 		}
 	},
 
+	// === Init ===
 	async init() {
-		await Promise.all([actions.loadProviders(), actions.loadCLIStatus()]);
+		await Promise.all([actions.loadProviders(), actions.loadCLIStatus(), actions.loadAgents()]);
 	},
 };
 
-// Listen for refresh events from tray actions
+// Listen for refresh events
 if (typeof window !== "undefined") {
-	window.addEventListener("clawflow:refresh-providers", () => {
-		actions.loadProviders();
-	});
-	window.addEventListener("clawflow:refresh-status", () => {
-		actions.loadCLIStatus();
-	});
-	window.addEventListener("clawflow:refresh-mcp", () => {
-		actions.loadMCPConfig();
-	});
-	window.addEventListener("clawflow:refresh-prompts", () => {
-		actions.loadPromptFile();
-	});
+	window.addEventListener("clawflow:refresh-providers", () => actions.loadProviders());
+	window.addEventListener("clawflow:refresh-status", () => actions.loadCLIStatus());
+	window.addEventListener("clawflow:refresh-mcp", () => actions.loadMCPConfig());
+	window.addEventListener("clawflow:refresh-prompts", () => actions.loadPromptFile());
+	window.addEventListener("clawflow:refresh-agents", () => actions.loadAgents());
 }

@@ -17,6 +17,9 @@ const rpc = Electroview.defineRPC<ClawFlowRPC>({
 			refreshPrompts: () => {
 				window.dispatchEvent(new CustomEvent("clawflow:refresh-prompts"));
 			},
+			refreshAgents: () => {
+				window.dispatchEvent(new CustomEvent("clawflow:refresh-agents"));
+			},
 			terminalData: ({ sessionId, data }) => {
 				window.dispatchEvent(new CustomEvent("clawflow:terminal-data", { detail: { sessionId, data } }));
 			},
@@ -30,6 +33,11 @@ const rpc = Electroview.defineRPC<ClawFlowRPC>({
 const electroview = new Electroview({ rpc });
 
 export const api = {
+	// Agent instances
+	getAgents: () => electroview.rpc.request.getAgents({}),
+	saveAgent: (agent: any) => electroview.rpc.request.saveAgent({ agent }),
+	deleteAgent: (agentId: string) => electroview.rpc.request.deleteAgent({ agentId }),
+	reorderAgents: (agentIds: string[]) => electroview.rpc.request.reorderAgents({ agentIds }),
 	// Provider
 	getProviders: () => electroview.rpc.request.getProviders({}),
 	getActiveProvider: (cli: string) => electroview.rpc.request.getActiveProvider({ cli }),
@@ -56,7 +64,7 @@ export const api = {
 	exportConfig: (filePath?: string) => electroview.rpc.request.exportConfig({ filePath }),
 	importConfig: (filePath: string) => electroview.rpc.request.importConfig({ filePath }),
 	// Terminal
-	terminalSpawn: (cli: string) => electroview.rpc.request.terminalSpawn({ cli }),
+	terminalSpawn: (agentId: string) => electroview.rpc.request.terminalSpawn({ agentId }),
 	terminalWrite: (sessionId: string, data: string) => electroview.rpc.request.terminalWrite({ sessionId, data }),
 	terminalResize: (sessionId: string, cols: number, rows: number) => electroview.rpc.request.terminalResize({ sessionId, cols, rows }),
 	terminalKill: (sessionId: string) => electroview.rpc.request.terminalKill({ sessionId }),

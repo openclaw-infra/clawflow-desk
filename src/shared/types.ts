@@ -1,10 +1,26 @@
 import { RPCSchema } from "electrobun/bun";
 
+// === Core Types ===
+export type CLIType = "claude" | "codex" | "gemini";
+
+// === Agent Instance — the new core entity ===
+export interface AgentInstance {
+	id: string;
+	name: string;
+	cli: CLIType;
+	providerId: string; // links to Provider
+	workDir?: string;
+	icon?: string; // emoji or color
+	color?: string; // brand color override
+	createdAt: number;
+	sortOrder: number;
+}
+
 // === Provider Types ===
 export interface Provider {
 	id: string;
 	name: string;
-	cli: "claude" | "codex" | "gemini";
+	cli: CLIType;
 	apiKey: string;
 	baseUrl?: string;
 	model?: string;
@@ -28,14 +44,14 @@ export interface MCPServer {
 }
 
 export interface MCPConfig {
-	cli: "claude" | "codex" | "gemini";
+	cli: CLIType;
 	servers: MCPServer[];
 	configPath: string;
 }
 
 // === Prompts Types ===
 export interface PromptFile {
-	cli: "claude" | "codex" | "gemini";
+	cli: CLIType;
 	filename: string;
 	path: string;
 	content: string;
@@ -44,7 +60,7 @@ export interface PromptFile {
 
 // === Process Types ===
 export interface CLIProcess {
-	cli: "claude" | "codex" | "gemini";
+	cli: CLIType;
 	pid: number;
 	status: "running" | "stopped" | "error";
 	startedAt: number;
@@ -55,6 +71,7 @@ export interface CLIProcess {
 export interface ExportData {
 	version: 1;
 	exportedAt: number;
+	agents: AgentInstance[];
 	providers: Provider[];
 	mcp: { claude: MCPServer[]; codex: MCPServer[]; gemini: MCPServer[] };
 	prompts: { claude: string; codex: string; gemini: string };
@@ -64,6 +81,11 @@ export interface ExportData {
 export type ClawFlowRPC = {
 	bun: RPCSchema<{
 		requests: {
+			// Agent instance management
+			getAgents: { params: {}; response: AgentInstance[] };
+			saveAgent: { params: { agent: AgentInstance }; response: AgentInstance };
+			deleteAgent: { params: { agentId: string }; response: void };
+			reorderAgents: { params: { agentIds: string[] }; response: void };
 			// Provider management
 			getProviders: { params: {}; response: Provider[] };
 			getActiveProvider: { params: { cli: string }; response: Provider | null };
@@ -87,8 +109,8 @@ export type ClawFlowRPC = {
 			// Import/Export
 			exportConfig: { params: { filePath?: string }; response: string };
 			importConfig: { params: { filePath: string }; response: ExportData };
-			// Terminal
-			terminalSpawn: { params: { cli: string }; response: { sessionId: string } };
+			// Terminal — now agent-based
+			terminalSpawn: { params: { agentId: string }; response: { sessionId: string } };
 			terminalWrite: { params: { sessionId: string; data: string }; response: void };
 			terminalResize: { params: { sessionId: string; cols: number; rows: number }; response: void };
 			terminalKill: { params: { sessionId: string }; response: void };
@@ -104,9 +126,9 @@ export type ClawFlowRPC = {
 			refreshStatus: {};
 			refreshMCP: {};
 			refreshPrompts: {};
+			refreshAgents: {};
 			terminalData: { sessionId: string; data: string };
 			terminalExit: { sessionId: string; code: number };
-		};
 		};
 	}>;
 };

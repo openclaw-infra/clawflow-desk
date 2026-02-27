@@ -23,8 +23,11 @@ function App() {
 
 	const renderContent = () => {
 		switch (snap.view) {
-			case "terminal":
-				return <TerminalView cli={snap.activeCLI} active={true} />;
+			case "terminal": {
+				const agent = snap.agents.find(a => a.id === snap.activeAgentId);
+				if (!agent) return <div className="flex-1 flex items-center justify-center text-muted-foreground">No agent selected. Click + to add one.</div>;
+				return <TerminalView key={agent.id} agent={agent as any} active={true} />;
+			}
 			case "providers":
 				return <ProviderList />;
 			case "add-provider":

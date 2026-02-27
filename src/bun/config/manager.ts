@@ -42,6 +42,16 @@ export class ConfigManager {
 		}));
 	}
 
+	getProviderById(providerId: string): Provider | null {
+		const row = this.db.query("SELECT * FROM providers WHERE id = ?").get(providerId) as any;
+		if (!row) return null;
+		return { ...row, isActive: Boolean(row.isActive) };
+	}
+
+	getDBPath(): string {
+		return DB_PATH;
+	}
+
 	getActiveProvider(cli: string): Provider | null {
 		const row = this.db.query("SELECT * FROM providers WHERE cli = ? AND isActive = 1").get(cli) as any;
 		if (!row) return null;

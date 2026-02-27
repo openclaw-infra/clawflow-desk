@@ -2,6 +2,7 @@ import { spawn, type Subprocess } from "bun";
 
 interface TerminalSession {
 	id: string;
+	agentId: string;
 	cli: string;
 	proc: Subprocess;
 	startedAt: number;
@@ -21,12 +22,12 @@ export function setTerminalCallbacks(data: DataCallback, exit: ExitCallback) {
 	onExit = exit;
 }
 
-export function terminalSpawn(cli: string): { sessionId: string } {
+export function terminalSpawn(agentId: string, cli: string, env: Record<string, string>, workDir?: string): { sessionId: string } {
 	const id = `term-${++sessionCounter}`;
 
-	// Kill existing session for this CLI
+	// Kill existing session for this agent
 	for (const [sid, s] of sessions) {
-		if (s.cli === cli) {
+		if (s.agentId === agentId) {
 			s.proc.kill();
 			sessions.delete(sid);
 		}
@@ -36,10 +37,11 @@ export function terminalSpawn(cli: string): { sessionId: string } {
 		stdin: "pipe",
 		stdout: "pipe",
 		stderr: "pipe",
-		env: { ...process.env, TERM: "xterm-256color" },
+		env: { ...process.env, ...env },
+		cwd: workDir || process.env.HOME,
 	});
 
-	const session: TerminalSession = { id, cli, proc, startedAt: Date.now() };
+	const session: TerminalSession = { id, agentId, cli, proc, startedAt: Date.now() };
 	sessions.set(id, session);
 
 	// Stream stdout
@@ -90,8 +92,7 @@ export function terminalWrite(sessionId: string, data: string): void {
 }
 
 export function terminalResize(sessionId: string, cols: number, rows: number): void {
-	// Bun subprocess doesn't support PTY resize natively
-	// This is a placeholder for future PTY support
+	// Placeholder for future PTY support
 }
 
 export function terminalKill(sessionId: string): void {
@@ -99,6 +100,13 @@ export function terminalKill(sessionId: string): void {
 	if (!session) return;
 	session.proc.kill();
 	sessions.delete(sessionId);
+}
+
+export function getSessionByAgent(agentId: string): string | null {
+	for (const [sid, s] of sessions) {
+		if (s.agentId === agentId) return sid;
+	}
+	return null;
 }
 
 export function killAllTerminals(): void {

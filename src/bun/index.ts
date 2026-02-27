@@ -8,16 +8,26 @@ import { startCLI, stopCLI, getCLIProcess, listCLIProcesses, stopAll } from "./c
 import { exportToFile, importFromFile, getDefaultExportPath } from "./config/export";
 import { startWatching, stopWatching } from "./config/watcher";
 import { terminalSpawn, terminalWrite, terminalResize, terminalKill, killAllTerminals, setTerminalCallbacks } from "./config/terminal";
+import { initAgentDB, getAgents, saveAgent, deleteAgent, reorderAgents, buildAgentEnv } from "./config/agents";
 
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_URL = `http://localhost:${DEV_SERVER_PORT}`;
 
 const configManager = new ConfigManager();
 
+// Initialize agent database (same DB file as providers)
+initAgentDB(configManager.getDBPath());
+
 // Define typed RPC
 const rpc = BrowserView.defineRPC<ClawFlowRPC>({
 	handlers: {
 		requests: {
+			// Agent management
+			getAgents: () => getAgents(),
+			saveAgent: ({ agent }) => saveAgent(agent),
+			deleteAgent: ({ agentId }) => deleteAgent(agentId),
+			reorderAgents: ({ agentIds }) => reorderAgents(agentIds),
+			// Provider management
 			getProviders: () => configManager.getProviders(),
 			getActiveProvider: ({ cli }) => configManager.getActiveProvider(cli),
 			setActiveProvider: ({ cli, providerId }) => {
@@ -47,8 +57,16 @@ const rpc = BrowserView.defineRPC<ClawFlowRPC>({
 				return path;
 			},
 			importConfig: ({ filePath }) => importFromFile(filePath),
-			// Terminal
-			terminalSpawn: ({ cli }) => terminalSpawn(cli),
+			// Terminal — agent-based spawn with env injection
+			terminalSpawn: ({ agentId }) => {
+				const agents = getAgents();
+				const agent = agents.find(a => a.id === agentId);
+				if (!agent) throw new Error(`Agent not found: ${agentId}`);
+				const provider = configManager.getProviderById(agent.providerId);
+				if (!provider) throw new Error(`Provider not found: ${agent.providerId}`);
+				const env = buildAgentEnv(agent, provider);
+				return terminalSpawn(agentId, agent.cli, env, agent.workDir);
+			},
 			terminalWrite: ({ sessionId, data }) => terminalWrite(sessionId, data),
 			terminalResize: ({ sessionId, cols, rows }) => terminalResize(sessionId, cols, rows),
 			terminalKill: ({ sessionId }) => terminalKill(sessionId),
@@ -82,9 +100,6 @@ const mainWindow = new BrowserWindow({
 	frame: { width: 960, height: 680, x: 200, y: 200 },
 });
 
-// System tray
-const tray = new Tray({
-
 // Wire terminal output to webview
 setTerminalCallbacks(
 	(sessionId, data) => {
@@ -106,20 +121,16 @@ const tray = new Tray({
 function updateTrayMenu() {
 	const providers = configManager.getProviders();
 	const clis = ["claude", "codex", "gemini"] as const;
-
 	const menuItems: any[] = [
 		{ type: "normal", label: "Open ClawFlow Desk", action: "open" },
 		{ type: "divider" },
 	];
-
 	for (const cli of clis) {
 		const cliProviders = providers.filter((p) => p.cli === cli);
 		if (cliProviders.length === 0) continue;
-
 		const label = cli === "claude" ? "Claude Code" : cli === "codex" ? "Codex" : "Gemini";
 		menuItems.push({
-			type: "normal",
-			label,
+			type: "normal", label,
 			submenu: cliProviders.map((p) => ({
 				type: "normal",
 				label: `${p.isActive ? "✓ " : "  "}${p.name}`,
@@ -127,35 +138,22 @@ function updateTrayMenu() {
 			})),
 		});
 	}
-
-	menuItems.push(
-		{ type: "divider" },
-		{ type: "normal", label: "Quit", action: "quit" },
-	);
-
+	menuItems.push({ type: "divider" }, { type: "normal", label: "Quit", action: "quit" });
 	tray.setMenu(menuItems);
 }
 
-tray.on("tray-clicked", () => {
-	mainWindow.focus();
-});
-
+tray.on("tray-clicked", () => { mainWindow.focus(); });
 tray.on("tray-item-clicked", (e) => {
 	const action = e.data.action;
-	if (action === "open") {
-		mainWindow.focus();
-	} else if (action === "quit") {
-		Utils.quit();
-	} else if (action.startsWith("switch:")) {
+	if (action === "open") mainWindow.focus();
+	else if (action === "quit") Utils.quit();
+	else if (action.startsWith("switch:")) {
 		const [, cli, providerId] = action.split(":");
 		configManager.setActiveProvider(cli, providerId);
 		updateTrayMenu();
-		// Notify webview to refresh
 		mainWindow.webview.rpc.send.refreshProviders({});
 	}
 });
-
-// Initialize tray menu
 updateTrayMenu();
 
 // Watch config files for external changes
@@ -170,7 +168,7 @@ startWatching((_path, _cli, type) => {
 		} else if (type === "prompt") {
 			mainWindow.webview.rpc.send.refreshPrompts({});
 		}
-	} catch 
+	} catch {}
 });
 
 // Graceful shutdown

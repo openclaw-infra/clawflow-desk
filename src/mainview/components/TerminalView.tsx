@@ -4,14 +4,15 @@ import { FitAddon } from "@xterm/addon-fit";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import { api } from "../lib/api";
 import { RotateCcw, Square, Trash2 } from "lucide-react";
+import type { AgentInstance } from "../../shared/types";
 import "xterm/css/xterm.css";
 
 interface Props {
-	cli: "claude" | "codex" | "gemini";
+	agent: AgentInstance;
 	active: boolean;
 }
 
-export function TerminalView({ cli, active }: Props) {
+export function TerminalView({ agent, active }: Props) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const termRef = useRef<Terminal | null>(null);
 	const fitRef = useRef<FitAddon | null>(null);
@@ -53,14 +54,12 @@ export function TerminalView({ cli, active }: Props) {
 		termRef.current = term;
 		fitRef.current = fit;
 
-		// Handle user input → send to backend
 		term.onData((data) => {
 			if (sessionRef.current) {
 				api.terminalWrite(sessionRef.current, data);
 			}
 		});
 
-		// Handle terminal data from backend
 		const handleData = (e: Event) => {
 			const { sessionId, data } = (e as CustomEvent).detail;
 			if (sessionId === sessionRef.current) {
@@ -68,7 +67,6 @@ export function TerminalView({ cli, active }: Props) {
 			}
 		};
 
-		// Handle terminal exit
 		const handleExit = (e: Event) => {
 			const { sessionId, code } = (e as CustomEvent).detail;
 			if (sessionId === sessionRef.current) {
@@ -81,7 +79,6 @@ export function TerminalView({ cli, active }: Props) {
 		window.addEventListener("clawflow:terminal-data", handleData);
 		window.addEventListener("clawflow:terminal-exit", handleExit);
 
-		// Resize observer
 		const ro = new ResizeObserver(() => fit.fit());
 		ro.observe(containerRef.current);
 
@@ -93,7 +90,6 @@ export function TerminalView({ cli, active }: Props) {
 		};
 	}, []);
 
-	// Focus terminal when tab becomes active
 	useEffect(() => {
 		if (active && termRef.current) {
 			termRef.current.focus();
@@ -105,10 +101,10 @@ export function TerminalView({ cli, active }: Props) {
 		const term = termRef.current;
 		if (!term) return;
 		term.clear();
-		term.writeln(`\x1b[36mStarting ${cli}...\x1b[0m\r\n`);
+		term.writeln(`\x1b[36mStarting ${agent.name}...\x1b[0m\r\n`);
 		setStatus("running");
 		try {
-			const { sessionId } = await api.terminalSpawn(cli);
+			const { sessionId } = await api.terminalSpawn(agent.id);
 			sessionRef.current = sessionId;
 		} catch (e: any) {
 			term.writeln(`\x1b[31mFailed to start: ${e.message}\x1b[0m`);
@@ -133,24 +129,22 @@ export function TerminalView({ cli, active }: Props) {
 		termRef.current?.clear();
 	};
 
-	// Auto-start on first mount
 	useEffect(() => {
-		if (status === "idle") {
-			handleStart();
-		}
+		if (status === "idle") handleStart();
 	}, []);
-
-	const cliLabels = { claude: "Claude Code", codex: "Codex", gemini: "Gemini CLI" };
 
 	return (
 		<div className="flex flex-col h-full">
 			<div className="flex items-center justify-between px-4 py-2 border-b border-border">
 				<div className="flex items-center gap-2">
 					<span className={`w-2 h-2 rounded-full ${status === "running" ? "bg-green-500 animate-pulse" : "bg-muted-foreground/30"}`} />
-					<span className="text-sm font-medium">{cliLabels[cli]}</span>
+					<span className="text-sm font-medium">{agent.name}</span>
 					<span className="text-xs text-muted-foreground">
 						{status === "running" ? "Running" : status === "exited" ? "Exited" : "Starting..."}
 					</span>
+					{agent.workDir && (
+						<span className="text-xs text-muted-foreground font-mono ml-2">{agent.workDir}</span>
+					)}
 				</div>
 				<div className="flex items-center gap-1">
 					<button onClick={handleClear} className="p-1.5 rounded-md hover:bg-accent transition-colors" title="Clear">
