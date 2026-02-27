@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClawFlow Desk — AI CLI Configuration Manager</title>
-<meta name="description" content="Ultra-lightweight desktop app to manage Claude Code, Codex, and Gemini CLI configurations. One-click provider switching, MCP server management, and prompt editing.">
+<title>ClawFlow Desk — AI CLI 配置管理器</title>
+<meta name="description" content="超轻量桌面应用，统一管理 Claude Code、Codex、Gemini CLI 配置。一键切换 Provider、MCP 服务器管理、Prompt 编辑。">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#09090b;--fg:#fafafa;--muted:#a1a1aa;--border:#27272a;--card:#18181b;--primary:#3b82f6;--primary-hover:#2563eb;--green:#22c55e;--amber:#f59e0b}
@@ -85,11 +85,11 @@ footer a:hover{color:var(--fg)}
 
 <section class="hero">
 <div class="container">
-<div class="hero-badge"><span class="dot"></span> v0.1.0 — Open Source</div>
-<h1>Manage your AI CLIs<br>with <span>ClawFlow Desk</span></h1>
-<p>One app to configure Claude Code, Codex, and Gemini CLI. Switch providers, manage MCP servers, edit prompts — all from a lightweight desktop app.</p>
+<div class="hero-badge"><span class="dot"></span> v0.1.0 — 开源免费</div>
+<h1>用 <span>ClawFlow Desk</span><br>管理你的 AI CLI</h1>
+<p>一个应用搞定 Claude Code、Codex、Gemini CLI 配置。切换 Provider、管理 MCP 服务器、编辑 Prompt — 全在一个轻量桌面应用里。</p>
 <div class="hero-actions">
-<a href="#download" class="btn btn-primary">⬇ Download</a>
+<a href="#download" class="btn btn-primary">⬇ 下载</a>
 <a href="https://github.com/openclaw-infra/clawflow-desk" class="btn btn-outline">GitHub →</a>
 </div>
 <div style="margin-top:48px;max-width:960px;margin-left:auto;margin-right:auto">
@@ -101,18 +101,18 @@ footer a:hover{color:var(--fg)}
 <section class="stats">
 <div class="container">
 <div class="stats-grid">
-<div><div class="stat-value">3</div><div class="stat-label">CLI Tools Supported</div></div>
-<div><div class="stat-value">116</div><div class="stat-label">Tests Passing</div></div>
-<div><div class="stat-value">4</div><div class="stat-label">Platforms</div></div>
-<div><div class="stat-value">&lt;50ms</div><div class="stat-label">Startup Time</div></div>
+<div><div class="stat-value">3</div><div class="stat-label">支持的 CLI 工具</div></div>
+<div><div class="stat-value">116</div><div class="stat-label">测试通过</div></div>
+<div><div class="stat-value">4</div><div class="stat-label">平台支持</div></div>
+<div><div class="stat-value">&lt;50ms</div><div class="stat-label">启动速度</div></div>
 </div>
 </div>
 </section>
 
 <section style="padding:60px 0">
 <div class="container" style="text-align:center">
-<h2 style="font-size:32px;font-weight:700;margin-bottom:12px;letter-spacing:-0.5px">See it in action</h2>
-<p style="color:var(--muted);margin-bottom:36px;font-size:16px">From idea to production — fully AI-powered, zero manual intervention</p>
+<h2 style="font-size:32px;font-weight:700;margin-bottom:12px;letter-spacing:-0.5px">看看效果</h2>
+<p style="color:var(--muted);margin-bottom:36px;font-size:16px">从需求到上线，全程 AI 驱动，零人工干预</p>
 <video controls playsinline preload="metadata" poster="designs/discord-full.png" style="width:100%;max-width:960px;border-radius:12px;box-shadow:0 25px 60px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06)">
 <source src="clawflow-promo.mp4" type="video/mp4">
 </video>
@@ -121,48 +121,48 @@ footer a:hover{color:var(--fg)}
 
 <section class="features">
 <div class="container">
-<h2>Everything you need</h2>
-<p class="subtitle">A complete configuration manager for AI coding assistants</p>
+<h2>你需要的一切</h2>
+<p class="subtitle">AI 编程助手的完整配置管理器</p>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:48px">
 <div>
 <img src="designs/discord-polished.png" alt="Discord-style Agent Interface" style="width:100%;border-radius:10px;border:1px solid #27272a">
-<p style="text-align:center;font-size:13px;color:#a1a1aa;margin-top:8px">Discord-style Agent Interface</p>
+<p style="text-align:center;font-size:13px;color:#a1a1aa;margin-top:8px">Discord 风格 Agent 界面</p>
 </div>
 <div>
 <img src="designs/mcp.png" alt="MCP Servers" style="width:100%;border-radius:10px;border:1px solid #27272a">
-<p style="text-align:center;font-size:13px;color:#a1a1aa;margin-top:8px">MCP Server Management</p>
+<p style="text-align:center;font-size:13px;color:#a1a1aa;margin-top:8px">MCP 服务器管理</p>
 </div>
 </div>
 <div class="feature-grid">
 <div class="feature-card">
 <div class="feature-icon">🔑</div>
-<h3>Provider Management</h3>
-<p>Add multiple API providers per CLI. Switch between them with one click. Atomic writes protect your config files.</p>
+<h3>Provider 管理</h3>
+<p>每个 CLI 支持多个 API Provider，一键切换。原子写入保护配置文件不损坏。</p>
 </div>
 <div class="feature-card">
 <div class="feature-icon">🔌</div>
-<h3>MCP Servers</h3>
-<p>Add, edit, enable/disable MCP servers across all three CLIs. Full support for commands, args, and environment variables.</p>
+<h3>MCP 服务器</h3>
+<p>跨三个 CLI 添加、编辑、启用/禁用 MCP 服务器。完整支持命令、参数和环境变量。</p>
 </div>
 <div class="feature-card">
 <div class="feature-icon">📝</div>
-<h3>Prompt Editor</h3>
-<p>Edit CLAUDE.md, AGENTS.md, and GEMINI.md directly. Character and line count, with instant save.</p>
+<h3>Prompt 编辑器</h3>
+<p>直接编辑 CLAUDE.md、AGENTS.md、GEMINI.md。字符和行数统计，即时保存。</p>
 </div>
 <div class="feature-card">
 <div class="feature-icon">⚡</div>
-<h3>Process Manager</h3>
-<p>Start, stop, and monitor CLI processes. See uptime, PID, and status at a glance.</p>
+<h3>进程管理</h3>
+<p>启动、停止、监控 CLI 进程。一目了然查看运行时间、PID 和状态。</p>
 </div>
 <div class="feature-card">
 <div class="feature-icon">💾</div>
-<h3>Import / Export</h3>
-<p>Backup all your configurations to a single JSON file. Restore on any machine in seconds.</p>
+<h3>导入 / 导出</h3>
+<p>所有配置备份到一个 JSON 文件。任何机器上秒级恢复。</p>
 </div>
 <div class="feature-card">
 <div class="feature-icon">🖥️</div>
-<h3>System Tray</h3>
-<p>Quick-switch providers from the system tray without opening the app. Always accessible.</p>
+<h3>系统托盘</h3>
+<p>从系统托盘快速切换 Provider，无需打开应用。随时可用。</p>
 </div>
 </div>
 </div>
@@ -170,7 +170,7 @@ footer a:hover{color:var(--fg)}
 
 <section class="cli-section">
 <div class="container">
-<h2>Supported CLIs</h2>
+<h2>支持的 CLI</h2>
 <div class="cli-grid">
 <div class="cli-card">
 <div class="cli-name">Claude Code</div>
@@ -205,8 +205,8 @@ footer a:hover{color:var(--fg)}
 
 <section class="download" id="download">
 <div class="container">
-<h2>Download</h2>
-<p class="subtitle">Built with Electrobun — lightweight, fast, native</p>
+<h2>下载</h2>
+<p class="subtitle">基于 Electrobun 构建 — 轻量、快速、原生体验</p>
 <div class="download-grid">
 <a href="https://github.com/openclaw-infra/clawflow-desk/actions" class="download-card">
 <div class="os-icon">🍎</div>
@@ -230,14 +230,14 @@ footer a:hover{color:var(--fg)}
 </a>
 </div>
 <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">
-Downloads are from GitHub Actions artifacts. <a href="https://github.com/openclaw-infra/clawflow-desk/releases">Releases page →</a>
+从 GitHub Actions 构建产物下载。<a href="https://github.com/openclaw-infra/clawflow-desk/releases">发布页 →</a>
 </p>
 </div>
 </section>
 
 <footer>
 <div class="container">
-<p>Built by <a href="https://github.com/openclaw-infra">OpenClaw</a> · <a href="https://github.com/openclaw-infra/clawflow-desk">Source Code</a> · MIT License</p>
+<p>由 <a href="https://github.com/openclaw-infra">OpenClaw</a> 构建 · <a href="https://github.com/openclaw-infra/clawflow-desk">源代码</a> · MIT 许可证</p>
 </div>
 </footer>
 
