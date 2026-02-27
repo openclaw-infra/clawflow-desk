@@ -109,6 +109,9 @@ export type ClawFlowRPC = {
 			// Import/Export
 			exportConfig: { params: { filePath?: string }; response: string };
 			importConfig: { params: { filePath: string }; response: ExportData };
+			// Settings (SQLite-backed)
+			getSetting: { params: { key: string }; response: string | null };
+			setSetting: { params: { key: string; value: string }; response: void };
 			// Terminal — now agent-based
 			terminalSpawn: { params: { agentId: string }; response: { sessionId: string } };
 			terminalWrite: { params: { sessionId: string; data: string }; response: void };

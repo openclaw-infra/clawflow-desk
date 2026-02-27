@@ -16,6 +16,19 @@ export function initAgentDB(dbPath: string) {
 		createdAt INTEGER NOT NULL,
 		sortOrder INTEGER NOT NULL DEFAULT 0
 	)`);
+	db.run(`CREATE TABLE IF NOT EXISTS settings (
+		key TEXT PRIMARY KEY,
+		value TEXT NOT NULL
+	)`);
+}
+
+export function getSetting(key: string): string | null {
+	const row = db.query("SELECT value FROM settings WHERE key = ?").get(key) as { value: string } | null;
+	return row?.value ?? null;
+}
+
+export function setSetting(key: string, value: string): void {
+	db.run("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", [key, value]);
 }
 
 export function getAgents(): AgentInstance[] {

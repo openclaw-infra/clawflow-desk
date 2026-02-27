@@ -1,4 +1,5 @@
-import { proxy, subscribe } from "valtio";
+import { proxy } from "valtio";
+import { api } from "../lib/api";
 
 type Theme = "light" | "dark" | "system";
 
@@ -8,7 +9,7 @@ interface ThemeState {
 }
 
 export const themeStore = proxy<ThemeState>({
-	theme: "system",
+	theme: "dark",
 	resolved: "dark",
 });
 
@@ -33,17 +34,32 @@ function resolve(theme: Theme): "light" | "dark" {
 export function setTheme(theme: Theme) {
 	themeStore.theme = theme;
 	applyTheme(resolve(theme));
-	try {
-		localStorage.setItem("clawflow-theme", theme);
-	} catch {}
+	// Persist to SQLite via RPC (fire-and-forget)
+	api.setSetting("theme", theme).catch(() => {});
+	// Also save to localStorage as fallback for browser preview
+	try { localStorage.setItem("clawflow-theme", theme); } catch {}
 }
 
-export function initTheme() {
+export async function initTheme() {
 	let saved: Theme = "dark";
+
+	// Try SQLite first (Electrobun), then localStorage fallback (browser)
 	try {
-		const s = localStorage.getItem("clawflow-theme") as Theme | null;
-		if (s === "light" || s === "dark" || s === "system") saved = s;
-	} catch {}
+		const dbTheme = await api.getSetting("theme");
+		if (dbTheme === "light" || dbTheme === "dark" || dbTheme === "system") {
+			saved = dbTheme;
+		} else {
+			// Fallback to localStorage
+			const lsTheme = localStorage.getItem("clawflow-theme") as Theme | null;
+			if (lsTheme === "light" || lsTheme === "dark" || lsTheme === "system") saved = lsTheme;
+		}
+	} catch {
+		try {
+			const lsTheme = localStorage.getItem("clawflow-theme") as Theme | null;
+			if (lsTheme === "light" || lsTheme === "dark" || lsTheme === "system") saved = lsTheme;
+		} catch {}
+	}
+
 	themeStore.theme = saved;
 	applyTheme(resolve(saved));
 

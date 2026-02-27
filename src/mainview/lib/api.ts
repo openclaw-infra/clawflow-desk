@@ -65,6 +65,8 @@ const mockApi = {
 	terminalWrite: async (_sessionId: string, _data: string) => {},
 	terminalResize: async (_sessionId: string, _cols: number, _rows: number) => {},
 	terminalKill: async (_sessionId: string) => {},
+	getSetting: async (_key: string) => null as string | null,
+	setSetting: async (_key: string, _value: string) => {},
 };
 
 // Real Electrobun API — lazy init to avoid WebSocket error in browser
@@ -115,6 +117,8 @@ async function initRealApi() {
 		terminalWrite: (sessionId: string, data: string) => electroview.rpc.request.terminalWrite({ sessionId, data }),
 		terminalResize: (sessionId: string, cols: number, rows: number) => electroview.rpc.request.terminalResize({ sessionId, cols, rows }),
 		terminalKill: (sessionId: string) => electroview.rpc.request.terminalKill({ sessionId }),
+		getSetting: (key: string) => electroview.rpc.request.getSetting({ key }),
+		setSetting: (key: string, value: string) => electroview.rpc.request.setSetting({ key, value }),
 	};
 	return realApi;
 }

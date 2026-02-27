@@ -8,7 +8,7 @@ import { startCLI, stopCLI, getCLIProcess, listCLIProcesses, stopAll } from "./c
 import { exportToFile, importFromFile, getDefaultExportPath } from "./config/export";
 import { startWatching, stopWatching } from "./config/watcher";
 import { terminalSpawn, terminalWrite, terminalResize, terminalKill, killAllTerminals, setTerminalCallbacks } from "./config/terminal";
-import { initAgentDB, getAgents, saveAgent, deleteAgent, reorderAgents, buildAgentEnv } from "./config/agents";
+import { initAgentDB, getAgents, saveAgent, deleteAgent, reorderAgents, buildAgentEnv, getSetting, setSetting } from "./config/agents";
 
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_URL = `http://localhost:${DEV_SERVER_PORT}`;
@@ -58,6 +58,9 @@ const rpc = BrowserView.defineRPC<ClawFlowRPC>({
 				return path;
 			},
 			importConfig: ({ filePath }) => importFromFile(filePath),
+			// Settings
+			getSetting: ({ key }) => getSetting(key),
+			setSetting: ({ key, value }) => setSetting(key, value),
 			// Terminal — agent-based spawn with env injection
 			terminalSpawn: ({ agentId }) => {
 				const agents = getAgents();
