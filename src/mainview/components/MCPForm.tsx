@@ -3,6 +3,8 @@ import { useSnapshot } from "valtio";
 import { store, actions } from "../store";
 import { ArrowLeft, Plus, X } from "lucide-react";
 
+const inputClass = "w-full px-3 py-1.5 rounded bg-[var(--color-input)] text-[var(--color-input-foreground)] text-sm placeholder:text-[var(--color-muted-foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]";
+
 export function MCPForm() {
 	const snap = useSnapshot(store);
 	const editing = snap.editingMCP;
@@ -23,22 +25,17 @@ export function MCPForm() {
 					: []
 			);
 		} else {
-			setName("");
-			setCommand("");
-			setArgs("");
-			setEnvPairs([]);
+			setName(""); setCommand(""); setArgs(""); setEnvPairs([]);
 		}
 	}, [editing]);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!name.trim() || !command.trim()) return;
-
 		const env: Record<string, string> = {};
 		for (const pair of envPairs) {
 			if (pair.key.trim()) env[pair.key.trim()] = pair.value;
 		}
-
 		actions.saveMCPServer({
 			name: name.trim(),
 			command: command.trim(),
@@ -56,95 +53,53 @@ export function MCPForm() {
 	};
 
 	return (
-		<div>
+		<div className="max-w-lg">
 			<button
 				onClick={() => actions.backToList()}
-				className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
+				className="flex items-center gap-1 text-xs text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] mb-3 transition-colors"
 			>
-				<ArrowLeft className="w-4 h-4" />
-				Back to MCP Servers
+				<ArrowLeft className="w-3.5 h-3.5" /> Back
 			</button>
 
-			<h2 className="text-lg font-semibold mb-6">
+			<h2 className="text-base font-semibold text-[var(--color-foreground)] mb-4">
 				{editing ? "Edit MCP Server" : "Add MCP Server"}
 			</h2>
 
-			<form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
+			<form onSubmit={handleSubmit} className="space-y-3">
 				<div>
-					<label className="block text-sm font-medium mb-1">Server Name</label>
-					<input
-						type="text"
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-						placeholder="e.g. filesystem"
-						disabled={!!editing}
-						className="w-full px-3 py-2 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50"
-						required
-					/>
+					<label className="block text-xs font-medium text-[var(--color-foreground)] mb-1">Server Name</label>
+					<input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. filesystem" disabled={!!editing} className={`${inputClass} disabled:opacity-40`} required />
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium mb-1">Command</label>
-					<input
-						type="text"
-						value={command}
-						onChange={(e) => setCommand(e.target.value)}
-						placeholder="e.g. npx or /usr/local/bin/mcp-server"
-						className="w-full px-3 py-2 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-						required
-					/>
+					<label className="block text-xs font-medium text-[var(--color-foreground)] mb-1">Command</label>
+					<input type="text" value={command} onChange={(e) => setCommand(e.target.value)} placeholder="e.g. npx or /usr/local/bin/mcp-server" className={inputClass} required />
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium mb-1">Arguments</label>
-					<input
-						type="text"
-						value={args}
-						onChange={(e) => setArgs(e.target.value)}
-						placeholder="e.g. -y @modelcontextprotocol/server-filesystem /tmp"
-						className="w-full px-3 py-2 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-					/>
-					<p className="text-xs text-muted-foreground mt-1">Space-separated arguments</p>
+					<label className="block text-xs font-medium text-[var(--color-foreground)] mb-1">Arguments</label>
+					<input type="text" value={args} onChange={(e) => setArgs(e.target.value)} placeholder="e.g. -y @modelcontextprotocol/server-filesystem /tmp" className={inputClass} />
+					<p className="text-[10px] text-[var(--color-muted-foreground)] mt-0.5">Space-separated arguments</p>
 				</div>
 
 				<div>
-					<div className="flex items-center justify-between mb-2">
-						<label className="block text-sm font-medium">Environment Variables</label>
-						<button
-							type="button"
-							onClick={addEnvPair}
-							className="flex items-center gap-1 text-xs text-primary hover:underline"
-						>
+					<div className="flex items-center justify-between mb-1.5">
+						<label className="text-xs font-medium text-[var(--color-foreground)]">Environment Variables</label>
+						<button type="button" onClick={addEnvPair} className="flex items-center gap-0.5 text-[10px] text-[var(--color-primary)] hover:text-[var(--color-brand-hover)]">
 							<Plus className="w-3 h-3" /> Add
 						</button>
 					</div>
 					{envPairs.length === 0 ? (
-						<p className="text-xs text-muted-foreground">No environment variables</p>
+						<p className="text-[10px] text-[var(--color-muted-foreground)]">No environment variables</p>
 					) : (
-						<div className="space-y-2">
+						<div className="space-y-1.5">
 							{envPairs.map((pair, idx) => (
-								<div key={idx} className="flex items-center gap-2">
-									<input
-										type="text"
-										value={pair.key}
-										onChange={(e) => updateEnvPair(idx, "key", e.target.value)}
-										placeholder="KEY"
-										className="flex-1 px-3 py-2 rounded-lg border bg-background text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
-									/>
-									<span className="text-muted-foreground">=</span>
-									<input
-										type="text"
-										value={pair.value}
-										onChange={(e) => updateEnvPair(idx, "value", e.target.value)}
-										placeholder="value"
-										className="flex-1 px-3 py-2 rounded-lg border bg-background text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
-									/>
-									<button
-										type="button"
-										onClick={() => removeEnvPair(idx)}
-										className="p-2 rounded-md hover:bg-destructive/10 transition-colors"
-									>
-										<X className="w-4 h-4 text-destructive" />
+								<div key={idx} className="flex items-center gap-1.5">
+									<input type="text" value={pair.key} onChange={(e) => updateEnvPair(idx, "key", e.target.value)} placeholder="KEY" className={`flex-1 ${inputClass} font-mono`} />
+									<span className="text-[var(--color-muted-foreground)] text-xs">=</span>
+									<input type="text" value={pair.value} onChange={(e) => updateEnvPair(idx, "value", e.target.value)} placeholder="value" className={`flex-1 ${inputClass} font-mono`} />
+									<button type="button" onClick={() => removeEnvPair(idx)} className="p-1 rounded hover:bg-[var(--color-destructive)]/10 transition-colors">
+										<X className="w-3.5 h-3.5 text-[var(--color-destructive)]" />
 									</button>
 								</div>
 							))}
@@ -152,18 +107,11 @@ export function MCPForm() {
 					)}
 				</div>
 
-				<div className="flex gap-3 pt-2">
-					<button
-						type="submit"
-						className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm hover:opacity-90 transition-opacity"
-					>
+				<div className="flex items-center gap-2 pt-1">
+					<button type="submit" className="px-4 py-1.5 rounded text-xs font-medium bg-[var(--color-primary)] text-white hover:bg-[var(--color-brand-hover)] transition-colors">
 						{editing ? "Update" : "Add"} Server
 					</button>
-					<button
-						type="button"
-						onClick={() => actions.backToList()}
-						className="px-4 py-2 rounded-lg border text-sm hover:bg-accent transition-colors"
-					>
+					<button type="button" onClick={() => actions.backToList()} className="px-4 py-1.5 rounded text-xs font-medium text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-accent)] transition-colors">
 						Cancel
 					</button>
 				</div>

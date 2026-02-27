@@ -16,6 +16,8 @@ const PRESETS: Record<CLIType, { name: string; baseUrl?: string }[]> = {
 	gemini: [{ name: "Official (Google)" }],
 };
 
+const inputClass = "w-full px-3 py-1.5 rounded bg-[var(--color-input)] text-[var(--color-input-foreground)] text-sm placeholder:text-[var(--color-muted-foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]";
+
 export function ProviderForm() {
 	const snap = useSnapshot(store);
 	const provider = snap.editingProvider;
@@ -52,38 +54,38 @@ export function ProviderForm() {
 		<div className="max-w-lg">
 			<button
 				onClick={actions.backToList}
-				className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
+				className="flex items-center gap-1 text-xs text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] mb-3 transition-colors"
 			>
-				<ArrowLeft className="w-4 h-4" /> Back
+				<ArrowLeft className="w-3.5 h-3.5" /> Back
 			</button>
 
-			<div className="mb-6">
-				<h2 className="text-xl font-semibold">
+			<div className="mb-4">
+				<h2 className="text-base font-semibold text-[var(--color-foreground)]">
 					{isEditing ? "Edit Provider" : "Add Provider"}
 				</h2>
-				<p className="text-sm text-muted-foreground mt-1">
+				<p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">
 					Configure API provider for {cliLabel}
 				</p>
 			</div>
 
 			{!isEditing && (
-				<div className="mb-6">
-					<label className="block text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">
+				<div className="mb-4">
+					<label className="block text-[10px] font-medium text-[var(--color-muted-foreground)] mb-1.5 uppercase tracking-wider">
 						Quick Presets
 					</label>
-					<div className="flex flex-wrap gap-2">
+					<div className="flex flex-wrap gap-1.5">
 						{PRESETS[snap.activeCLI].map((preset) => (
 							<button
 								key={preset.name}
 								onClick={() => handlePreset(preset)}
-								className="px-3 py-1.5 rounded-lg text-xs font-medium border border-border hover:bg-secondary transition-colors"
+								className="px-2.5 py-1 rounded text-xs font-medium bg-[var(--color-card)] text-[var(--color-foreground)] hover:bg-[var(--color-channel-hover)] transition-colors"
 							>
 								{preset.name}
 							</button>
 						))}
 						<button
 							onClick={() => { setName(""); setBaseUrl(""); }}
-							className="px-3 py-1.5 rounded-lg text-xs font-medium border border-dashed border-border hover:bg-secondary transition-colors text-muted-foreground"
+							className="px-2.5 py-1 rounded text-xs font-medium border border-dashed border-[var(--color-muted-foreground)]/30 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:border-[var(--color-foreground)]/30 transition-colors"
 						>
 							Custom
 						</button>
@@ -91,77 +93,58 @@ export function ProviderForm() {
 				</div>
 			)}
 
-			<form onSubmit={handleSubmit} className="space-y-4">
+			<form onSubmit={handleSubmit} className="space-y-3">
 				<div>
-					<label className="block text-sm font-medium mb-1.5">Name</label>
-					<input
-						type="text"
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-						placeholder="e.g. My Proxy"
-						className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
-						required
-					/>
+					<label className="block text-xs font-medium text-[var(--color-foreground)] mb-1">Name</label>
+					<input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. My Proxy" className={inputClass} required />
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium mb-1.5">API Key</label>
+					<label className="block text-xs font-medium text-[var(--color-foreground)] mb-1">API Key</label>
 					<div className="relative">
 						<input
 							type={showKey ? "text" : "password"}
 							value={apiKey}
 							onChange={(e) => setApiKey(e.target.value)}
 							placeholder={snap.activeCLI === "claude" ? "sk-ant-..." : snap.activeCLI === "codex" ? "sk-..." : "AI..."}
-							className="w-full px-3 py-2 pr-10 rounded-lg border border-border bg-background text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
+							className={`${inputClass} pr-9 font-mono`}
 							required
 						/>
 						<button
 							type="button"
 							onClick={() => setShowKey(!showKey)}
-							className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+							className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors"
 						>
-							{showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+							{showKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
 						</button>
 					</div>
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium mb-1.5">
-						Base URL <span className="text-muted-foreground font-normal">(optional)</span>
+					<label className="block text-xs font-medium text-[var(--color-foreground)] mb-1">
+						Base URL <span className="text-[var(--color-muted-foreground)] font-normal">(optional)</span>
 					</label>
-					<input
-						type="url"
-						value={baseUrl}
-						onChange={(e) => setBaseUrl(e.target.value)}
-						placeholder="https://api.example.com/v1"
-						className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
-					/>
+					<input type="url" value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} placeholder="https://api.example.com/v1" className={inputClass} />
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium mb-1.5">
-						Model <span className="text-muted-foreground font-normal">(optional)</span>
+					<label className="block text-xs font-medium text-[var(--color-foreground)] mb-1">
+						Model <span className="text-[var(--color-muted-foreground)] font-normal">(optional)</span>
 					</label>
-					<input
-						type="text"
-						value={model}
-						onChange={(e) => setModel(e.target.value)}
-						placeholder={snap.activeCLI === "claude" ? "claude-sonnet-4-5" : snap.activeCLI === "codex" ? "gpt-5.3-codex" : "gemini-3-pro"}
-						className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
-					/>
+					<input type="text" value={model} onChange={(e) => setModel(e.target.value)} placeholder={snap.activeCLI === "claude" ? "claude-sonnet-4-5" : snap.activeCLI === "codex" ? "gpt-5.3-codex" : "gemini-3-pro"} className={inputClass} />
 				</div>
 
-				<div className="flex items-center gap-3 pt-2">
+				<div className="flex items-center gap-2 pt-1">
 					<button
 						type="submit"
-						className="px-5 py-2.5 rounded-lg text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
+						className="px-4 py-1.5 rounded text-xs font-medium bg-[var(--color-primary)] text-white hover:bg-[var(--color-brand-hover)] transition-colors"
 					>
 						{isEditing ? "Save Changes" : "Add Provider"}
 					</button>
 					<button
 						type="button"
 						onClick={actions.backToList}
-						className="px-5 py-2.5 rounded-lg text-sm font-medium bg-secondary hover:bg-muted transition-colors"
+						className="px-4 py-1.5 rounded text-xs font-medium text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-accent)] transition-colors"
 					>
 						Cancel
 					</button>

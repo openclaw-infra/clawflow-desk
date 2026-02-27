@@ -16,83 +16,78 @@ export function MCPList() {
 
 	return (
 		<div>
-			<div className="flex items-center justify-between mb-6">
+			<div className="flex items-center justify-between mb-4">
 				<div>
-					<h2 className="text-lg font-semibold">MCP Servers</h2>
-					<p className="text-sm text-muted-foreground mt-1 font-mono">{configPath}</p>
+					<h2 className="text-base font-semibold text-[var(--color-foreground)]">MCP Servers</h2>
+					<p className="text-xs text-[var(--color-muted-foreground)] mt-0.5 font-mono">{configPath}</p>
 				</div>
 				<button
 					onClick={() => actions.showAddMCP()}
-					className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm hover:opacity-90 transition-opacity"
+					className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium bg-[var(--color-primary)] text-white hover:bg-[var(--color-brand-hover)] transition-colors"
 				>
-					<Plus className="w-4 h-4" />
-					Add Server
+					<Plus className="w-3.5 h-3.5" /> Add Server
 				</button>
 			</div>
 
 			{servers.length === 0 ? (
-				<div className="text-center py-12 text-muted-foreground">
-					<Terminal className="w-12 h-12 mx-auto mb-3 opacity-40" />
-					<p>No MCP servers configured</p>
-					<p className="text-sm mt-1">Add a server to get started</p>
+				<div className="flex flex-col items-center justify-center py-16 text-center">
+					<div className="w-16 h-16 rounded-full bg-[var(--color-input)] flex items-center justify-center mb-4">
+						<Terminal className="w-8 h-8 text-[var(--color-muted-foreground)]" />
+					</div>
+					<p className="text-sm text-[var(--color-muted-foreground)]">No MCP servers configured</p>
+					<p className="text-xs text-[var(--color-muted-foreground)] mt-1">Add a server to get started</p>
 				</div>
 			) : (
-				<div className="space-y-3">
+				<div className="space-y-1">
 					{servers.map((server) => (
 						<div
 							key={server.name}
 							className={cn(
-								"p-4 rounded-lg border transition-colors",
+								"group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
 								server.disabled
-									? "bg-muted/50 border-border opacity-60"
-									: "bg-card border-border hover:border-primary/30"
+									? "opacity-50"
+									: "hover:bg-[var(--color-channel-hover)]"
 							)}
 						>
-							<div className="flex items-center justify-between">
-								<div className="flex-1 min-w-0">
-									<div className="flex items-center gap-2">
-										<span className={cn(
-											"w-2 h-2 rounded-full",
-											server.disabled ? "bg-muted-foreground" : "bg-green-500"
-										)} />
-										<h3 className="font-medium truncate">{server.name}</h3>
-									</div>
-									<p className="text-sm text-muted-foreground mt-1 font-mono truncate">
-										{server.command} {server.args?.join(" ") || ""}
+							<div className={cn(
+								"w-2 h-2 rounded-full shrink-0",
+								server.disabled ? "bg-[var(--color-muted-foreground)]" : "bg-[var(--color-success)]"
+							)} />
+
+							<div className="flex-1 min-w-0">
+								<h3 className="text-sm font-medium text-[var(--color-foreground)] truncate">{server.name}</h3>
+								<p className="text-xs text-[var(--color-muted-foreground)] font-mono truncate mt-0.5">
+									{server.command} {server.args?.join(" ") || ""}
+								</p>
+								{server.env && Object.keys(server.env).length > 0 && (
+									<p className="text-[10px] text-[var(--color-muted-foreground)] mt-0.5">
+										{Object.keys(server.env).length} env var{Object.keys(server.env).length > 1 ? "s" : ""}
 									</p>
-									{server.env && Object.keys(server.env).length > 0 && (
-										<p className="text-xs text-muted-foreground mt-1">
-											{Object.keys(server.env).length} env var{Object.keys(server.env).length > 1 ? "s" : ""}
-										</p>
-									)}
-								</div>
-								<div className="flex items-center gap-1 ml-3">
-									<button
-										onClick={() => actions.toggleMCPServer(server.name, !server.disabled)}
-										className="p-2 rounded-md hover:bg-accent transition-colors"
-										title={server.disabled ? "Enable" : "Disable"}
-									>
-										{server.disabled ? (
-											<PowerOff className="w-4 h-4 text-muted-foreground" />
-										) : (
-											<Power className="w-4 h-4 text-green-500" />
-										)}
-									</button>
-									<button
-										onClick={() => actions.showEditMCP({ ...server })}
-										className="p-2 rounded-md hover:bg-accent transition-colors"
-										title="Edit"
-									>
-										<Pencil className="w-4 h-4" />
-									</button>
-									<button
-										onClick={() => actions.deleteMCPServer(server.name)}
-										className="p-2 rounded-md hover:bg-destructive/10 transition-colors"
-										title="Delete"
-									>
-										<Trash2 className="w-4 h-4 text-destructive" />
-									</button>
-								</div>
+								)}
+							</div>
+
+							<div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+								<button
+									onClick={() => actions.toggleMCPServer(server.name, !server.disabled)}
+									className="p-1.5 rounded text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-accent)] transition-colors"
+									title={server.disabled ? "Enable" : "Disable"}
+								>
+									{server.disabled ? <PowerOff className="w-3.5 h-3.5" /> : <Power className="w-3.5 h-3.5 text-[var(--color-success)]" />}
+								</button>
+								<button
+									onClick={() => actions.showEditMCP({ ...server })}
+									className="p-1.5 rounded text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-accent)] transition-colors"
+									title="Edit"
+								>
+									<Pencil className="w-3.5 h-3.5" />
+								</button>
+								<button
+									onClick={() => actions.deleteMCPServer(server.name)}
+									className="p-1.5 rounded text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)] hover:bg-[var(--color-destructive)]/10 transition-colors"
+									title="Delete"
+								>
+									<Trash2 className="w-3.5 h-3.5" />
+								</button>
 							</div>
 						</div>
 					))}

@@ -35,43 +35,40 @@ export function PromptsEditor() {
 
 	return (
 		<div className="flex flex-col h-full">
-			<div className="flex items-center justify-between mb-4">
+			<div className="flex items-center justify-between mb-3">
 				<div>
-					<h2 className="text-lg font-semibold flex items-center gap-2">
-						<FileText className="w-5 h-5" />
+					<h2 className="text-base font-semibold text-[var(--color-foreground)] flex items-center gap-2">
+						<FileText className="w-4 h-4 text-[var(--color-muted-foreground)]" />
 						{filename}
 					</h2>
-					<p className="text-sm text-muted-foreground mt-1 font-mono">
+					<p className="text-xs text-[var(--color-muted-foreground)] mt-0.5 font-mono">
 						{snap.promptFile?.path || ""}
 					</p>
 				</div>
 				<div className="flex items-center gap-2">
 					{saved && (
-						<span className="text-sm text-green-500 animate-in fade-in">Saved!</span>
+						<span className="text-xs text-[var(--color-success)]">Saved!</span>
 					)}
 					{isDirty && (
 						<button
 							onClick={handleReset}
-							className="flex items-center gap-1 px-3 py-2 rounded-lg border text-sm hover:bg-accent transition-colors"
-							title="Discard changes"
+							className="flex items-center gap-1 px-2 py-1 rounded text-xs text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-accent)] transition-colors"
 						>
-							<RotateCcw className="w-4 h-4" />
-							Reset
+							<RotateCcw className="w-3 h-3" /> Reset
 						</button>
 					)}
 					<button
 						onClick={handleSave}
 						disabled={!isDirty}
-						className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+						className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium bg-[var(--color-primary)] text-white hover:bg-[var(--color-brand-hover)] transition-colors disabled:opacity-40"
 					>
-						<Save className="w-4 h-4" />
-						Save
+						<Save className="w-3.5 h-3.5" /> Save
 					</button>
 				</div>
 			</div>
 
 			{!snap.promptFile?.exists && (
-				<div className="mb-3 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-sm text-amber-600 dark:text-amber-400">
+				<div className="mb-2 px-3 py-2 rounded bg-[var(--color-discord-yellow)]/10 text-xs text-[var(--color-discord-yellow)]">
 					File does not exist yet. It will be created when you save.
 				</div>
 			)}
@@ -80,11 +77,11 @@ export function PromptsEditor() {
 				value={content}
 				onChange={(e) => setContent(e.target.value)}
 				placeholder={`# ${filename}\n\nWrite your system prompt here...`}
-				className="flex-1 w-full px-4 py-3 rounded-lg border bg-background font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[400px]"
+				className="flex-1 w-full px-3 py-2.5 rounded-lg bg-[var(--color-input)] text-[var(--color-input-foreground)] font-mono text-xs resize-none focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] min-h-[400px] placeholder:text-[var(--color-muted-foreground)]"
 				spellCheck={false}
 			/>
 
-			<div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+			<div className="flex items-center justify-between mt-1.5 text-[10px] text-[var(--color-muted-foreground)]">
 				<span>{content.length} characters</span>
 				<span>{content.split("\n").length} lines</span>
 			</div>

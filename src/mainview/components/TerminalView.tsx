@@ -3,7 +3,7 @@ import { Terminal } from "xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import { api } from "../lib/api";
-import { RotateCcw, Square, Trash2 } from "lucide-react";
+import { RotateCcw, Square, Trash2, Play } from "lucide-react";
 import type { AgentInstance } from "../../shared/types";
 import "xterm/css/xterm.css";
 
@@ -24,20 +24,28 @@ export function TerminalView({ agent, active }: Props) {
 
 		const term = new Terminal({
 			theme: {
-				background: "#1a1a1f",
-				foreground: "#fafafa",
-				cursor: "#fafafa",
-				selectionBackground: "#3b82f644",
-				black: "#1a1a1f",
-				red: "#ef4444",
-				green: "#22c55e",
-				yellow: "#f59e0b",
-				blue: "#3b82f6",
-				magenta: "#a855f7",
-				cyan: "#06b6d4",
-				white: "#fafafa",
+				background: "#1e1f22",
+				foreground: "#dbdee1",
+				cursor: "#f2f3f5",
+				selectionBackground: "#5865f244",
+				black: "#1e1f22",
+				red: "#ed4245",
+				green: "#57f287",
+				yellow: "#fee75c",
+				blue: "#5865f2",
+				magenta: "#eb459e",
+				cyan: "#00b0f4",
+				white: "#f2f3f5",
+				brightBlack: "#4f545c",
+				brightRed: "#ed4245",
+				brightGreen: "#57f287",
+				brightYellow: "#fee75c",
+				brightBlue: "#5865f2",
+				brightMagenta: "#eb459e",
+				brightCyan: "#00b0f4",
+				brightWhite: "#ffffff",
 			},
-			fontFamily: "'SF Mono', Monaco, 'Cascadia Code', monospace",
+			fontFamily: "'SF Mono', Monaco, 'Cascadia Code', 'Fira Code', monospace",
 			fontSize: 13,
 			lineHeight: 1.4,
 			cursorBlink: true,
@@ -62,9 +70,7 @@ export function TerminalView({ agent, active }: Props) {
 
 		const handleData = (e: Event) => {
 			const { sessionId, data } = (e as CustomEvent).detail;
-			if (sessionId === sessionRef.current) {
-				term.write(data);
-			}
+			if (sessionId === sessionRef.current) term.write(data);
 		};
 
 		const handleExit = (e: Event) => {
@@ -125,47 +131,44 @@ export function TerminalView({ agent, active }: Props) {
 		await handleStart();
 	};
 
-	const handleClear = () => {
-		termRef.current?.clear();
-	};
-
 	useEffect(() => {
 		if (status === "idle") handleStart();
 	}, []);
 
 	return (
-		<div className="flex flex-col h-full">
-			<div className="flex items-center justify-between px-4 py-2 border-b border-border">
+		<div className="flex flex-col h-full bg-[#1e1f22]">
+			{/* Terminal toolbar */}
+			<div className="flex items-center justify-between px-3 py-1.5 bg-[#2b2d31] border-b border-[var(--color-border)]">
 				<div className="flex items-center gap-2">
-					<span className={`w-2 h-2 rounded-full ${status === "running" ? "bg-green-500 animate-pulse" : "bg-muted-foreground/30"}`} />
-					<span className="text-sm font-medium">{agent.name}</span>
-					<span className="text-xs text-muted-foreground">
+					<span className={`w-2 h-2 rounded-full ${status === "running" ? "bg-[var(--color-success)] animate-pulse" : "bg-[var(--color-muted-foreground)]/40"}`} />
+					<span className="text-xs font-medium text-[var(--color-foreground)]">{agent.name}</span>
+					<span className="text-[10px] text-[var(--color-muted-foreground)] uppercase tracking-wider">
 						{status === "running" ? "Running" : status === "exited" ? "Exited" : "Starting..."}
 					</span>
 					{agent.workDir && (
-						<span className="text-xs text-muted-foreground font-mono ml-2">{agent.workDir}</span>
+						<span className="text-[10px] text-[var(--color-muted-foreground)] font-mono ml-1">{agent.workDir}</span>
 					)}
 				</div>
-				<div className="flex items-center gap-1">
-					<button onClick={handleClear} className="p-1.5 rounded-md hover:bg-accent transition-colors" title="Clear">
-						<Trash2 className="w-3.5 h-3.5 text-muted-foreground" />
+				<div className="flex items-center gap-0.5">
+					<button onClick={() => termRef.current?.clear()} className="p-1 rounded hover:bg-[var(--color-accent)] transition-colors" title="Clear">
+						<Trash2 className="w-3.5 h-3.5 text-[var(--color-muted-foreground)]" />
 					</button>
-					<button onClick={handleRestart} className="p-1.5 rounded-md hover:bg-accent transition-colors" title="Restart">
-						<RotateCcw className="w-3.5 h-3.5 text-muted-foreground" />
+					<button onClick={handleRestart} className="p-1 rounded hover:bg-[var(--color-accent)] transition-colors" title="Restart">
+						<RotateCcw className="w-3.5 h-3.5 text-[var(--color-muted-foreground)]" />
 					</button>
-					{status === "running" && (
-						<button onClick={handleStop} className="p-1.5 rounded-md hover:bg-destructive/10 transition-colors" title="Stop">
-							<Square className="w-3.5 h-3.5 text-destructive" />
+					{status === "running" ? (
+						<button onClick={handleStop} className="p-1 rounded hover:bg-[var(--color-destructive)]/10 transition-colors" title="Stop">
+							<Square className="w-3.5 h-3.5 text-[var(--color-destructive)]" />
 						</button>
-					)}
-					{status !== "running" && (
-						<button onClick={handleStart} className="px-2.5 py-1 rounded-md bg-green-500/10 text-green-500 text-xs font-medium hover:bg-green-500/20 transition-colors">
-							Start
+					) : (
+						<button onClick={handleStart} className="flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-[var(--color-success)]/15 text-[var(--color-success)] hover:bg-[var(--color-success)]/25 transition-colors">
+							<Play className="w-3 h-3" /> Start
 						</button>
 					)}
 				</div>
 			</div>
-			<div ref={containerRef} className="flex-1 p-1" style={{ minHeight: 0 }} />
+			{/* Terminal container */}
+			<div ref={containerRef} className="flex-1 px-1 pt-1" style={{ minHeight: 0 }} />
 		</div>
 	);
 }

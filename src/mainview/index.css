@@ -47,6 +47,13 @@
 	--color-border: #1e1f22;
 	--color-ring: #5865f2;
 	--color-success: #57f287;
+	/* Extra Discord tokens */
+	--color-card: #2b2d31;
+	--color-card-foreground: #f2f3f5;
+	--color-input: #1e1f22;
+	--color-input-foreground: #dbdee1;
+	--color-channel-hover: #35373c;
+	--color-brand-hover: #4752c4;
 }
 
 * {
