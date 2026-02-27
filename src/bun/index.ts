@@ -12,6 +12,7 @@ import { initAgentDB, getAgents, saveAgent, deleteAgent, reorderAgents, buildAge
 
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_URL = `http://localhost:${DEV_SERVER_PORT}`;
+const REMOTE_UI_URL = "https://clawflow-desk.pages.dev";
 
 const configManager = new ConfigManager();
 
@@ -75,18 +76,33 @@ const rpc = BrowserView.defineRPC<ClawFlowRPC>({
 	},
 });
 
-// Check for dev server
+// Check for dev server, then remote UI, then local views
 async function getMainViewUrl(): Promise<string> {
 	const channel = await Updater.localInfo.channel();
+
+	// 1. Dev mode: try local Vite HMR server
 	if (channel === "dev") {
 		try {
 			await fetch(DEV_SERVER_URL, { method: "HEAD" });
 			console.log(`HMR enabled: ${DEV_SERVER_URL}`);
 			return DEV_SERVER_URL;
 		} catch {
-			console.log("Vite dev server not running. Run 'bun run dev:hmr' for HMR.");
+			console.log("Vite dev server not running.");
 		}
 	}
+
+	// 2. Production/Canary: try remote UI (Cloudflare Pages) for hot updates
+	try {
+		const res = await fetch(REMOTE_UI_URL, { method: "HEAD" });
+		if (res.ok) {
+			console.log(`Remote UI enabled: ${REMOTE_UI_URL}`);
+			return REMOTE_UI_URL;
+		}
+	} catch {
+		console.log("Remote UI unreachable, falling back to local.");
+	}
+
+	// 3. Fallback: bundled local views
 	return "views://mainview/index.html";
 }
 
