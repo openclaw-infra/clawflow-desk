@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ClawFlow Desk — Discord-polished</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:40px}
+.window{width:1140px;height:740px;background:#313338;border-radius:12px;overflow:hidden;display:flex;box-shadow:0 25px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04);position:relative}
+
+/* Titlebar */
+.titlebar{position:absolute;top:0;left:0;right:0;height:32px;display:flex;align-items:center;padding:0 12px;gap:8px;z-index:10;background:#1e1f22;-webkit-app-region:drag}
+.dots{display:flex;gap:8px;padding:0 4px}
+.dot{width:12px;height:12px;border-radius:50%}.dot-r{background:#ff5f57}.dot-y{background:#febc2e}.dot-g{background:#28c840}
+
+/* === Agent Rail === */
+.rail{width:72px;background:#1e1f22;padding-top:36px;display:flex;flex-direction:column;align-items:center;gap:8px;padding-bottom:8px}
+.rail-item{position:relative;width:48px;height:48px}
+.rail-pill{position:absolute;left:-4px;top:50%;transform:translateY(-50%);width:4px;border-radius:0 4px 4px 0;background:#fff;transition:height .15s}
+.rail-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-radius .15s,background .15s;overflow:hidden}
+.rail-icon:hover{border-radius:16px}
+.rail-item.active .rail-icon{border-radius:16px}
+.rail-item.active .rail-pill{height:40px}
+.rail-item:not(.active):hover .rail-pill{height:20px}
+.rail-item:not(.active) .rail-pill{height:0}
+.rail-icon .badge{position:absolute;bottom:-2px;right:-2px;width:16px;height:16px;border-radius:50%;border:3px solid #1e1f22}
+.badge-on{background:#23a559}
+.badge-off{background:#80848e}
+.rail-sep{width:32px;height:2px;background:#35363c;border-radius:1px;margin:4px 0}
+.rail-add{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#313338;color:#23a559;font-size:24px;font-weight:300;cursor:pointer;transition:border-radius .15s,background .15s,color .15s}
+.rail-add:hover{border-radius:16px;background:#23a559;color:#fff}
+
+/* === Channel Sidebar === */
+.channels{width:240px;background:#2b2d31;padding-top:32px;display:flex;flex-direction:column;border-right:none}
+.ch-header{height:48px;padding:0 16px;display:flex;align-items:center;border-bottom:1px solid #1f2023;box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.ch-header h2{font-size:16px;font-weight:600;color:#f2f3f5;flex:1}
+.ch-header .ch-badge{font-size:10px;padding:2px 6px;border-radius:4px;background:#23a55933;color:#23a559;font-weight:600}
+.ch-body{flex:1;overflow-y:auto;padding:8px 0}
+.ch-cat{padding:18px 8px 4px 16px;font-size:12px;font-weight:700;color:#949ba4;text-transform:uppercase;letter-spacing:.02em;display:flex;align-items:center}
+.ch-cat svg{width:12px;height:12px;margin-right:2px;opacity:.7}
+.ch-item{display:flex;align-items:center;gap:6px;padding:6px 8px;margin:1px 8px;border-radius:4px;font-size:15px;color:#949ba4;cursor:pointer}
+.ch-item:hover{background:#35373c;color:#dbdee1}
+.ch-item.active{background:#404249;color:#f2f3f5}
+.ch-hash{font-size:20px;font-weight:500;color:#80848e;width:20px;text-align:center;flex-shrink:0}
+.ch-item.active .ch-hash{color:#f2f3f5}
+.ch-name{flex:1;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-unread{min-width:16px;height:16px;border-radius:8px;background:#f23f43;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* === User Bar (bottom) === */
+.user-panel{height:52px;background:#232428;padding:0 8px;display:flex;align-items:center;gap:8px}
+.user-avatar-wrap{position:relative}
+.user-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff}
+.user-avatar-status{position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;border-radius:50%;background:#23a559;border:2px solid #232428}
+.user-meta{flex:1;min-width:0}
+.user-displayname{font-size:13px;font-weight:600;color:#f2f3f5;line-height:1.2}
+.user-tag{font-size:12px;color:#949ba4;line-height:1.2}
+.user-btns{display:flex;gap:2px}
+.user-btn{width:32px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#b5bac1;cursor:pointer}
+.user-btn:hover{background:#35373c;color:#dbdee1}
+.user-btn svg{width:20px;height:20px}
+
+/* === Main Chat === */
+.main{flex:1;display:flex;flex-direction:column;padding-top:32px;background:#313338}
+.chat-toolbar{height:48px;padding:0 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #1f2023;box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.chat-toolbar .ct-hash{font-size:24px;color:#80848e;font-weight:500}
+.chat-toolbar .ct-name{font-size:16px;font-weight:600;color:#f2f3f5}
+.chat-toolbar .ct-sep{width:1px;height:24px;background:#3f4147;margin:0 8px}
+.chat-toolbar .ct-topic{font-size:14px;color:#949ba4;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-toolbar .ct-actions{display:flex;gap:4px}
+.ct-btn{width:28px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#b5bac1;cursor:pointer}
+.ct-btn:hover{color:#dbdee1}
+
+/* Messages */
+.messages{flex:1;padding:16px 0;overflow-y:auto}
+.msg-divider{display:flex;align-items:center;margin:8px 16px;gap:4px}
+.msg-divider::before,.msg-divider::after{content:'';flex:1;height:1px;background:#3f4147}
+.msg-divider span{font-size:12px;font-weight:600;color:#949ba4;padding:0 8px;white-space:nowrap}
+
+.msg{display:flex;padding:2px 48px 2px 72px;position:relative;min-height:44px}
+.msg:hover{background:#2e3035}
+.msg-avatar{position:absolute;left:16px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;margin-top:2px}
+.msg-body{flex:1;min-width:0}
+.msg-header{display:flex;align-items:baseline;gap:4px}
+.msg-author{font-size:16px;font-weight:600;cursor:pointer}
+.msg-author:hover{text-decoration:underline}
+.msg-ts{font-size:12px;color:#949ba4;margin-left:4px}
+.msg-content{font-size:15px;color:#dbdee1;line-height:1.375;margin-top:2px}
+.msg-content code{background:#2b2d31;padding:2px 4px;border-radius:3px;font-family:'Consolas','Courier New',monospace;font-size:14px}
+
+/* Code block */
+.msg-codeblock{background:#2b2d31;border:1px solid #1e1f22;border-radius:4px;margin-top:4px;overflow:hidden}
+.msg-codeblock-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#2b2d31;border-bottom:1px solid #1e1f22}
+.msg-codeblock-lang{font-size:12px;color:#949ba4;font-weight:600}
+.msg-codeblock-copy{font-size:12px;color:#949ba4;cursor:pointer;padding:2px 8px;border-radius:3px}
+.msg-codeblock-copy:hover{background:#35373c;color:#dbdee1}
+.msg-codeblock pre{padding:12px;font-family:'Consolas','Courier New',monospace;font-size:14px;line-height:1.5;color:#dbdee1;overflow-x:auto}
+.kw{color:#c678dd}
+.fn{color:#61afef}
+.str{color:#98c379}
+.cm{color:#5c6370;font-style:italic}
+.num{color:#d19a66}
+
+/* Hover actions on message */
+.msg-actions{position:absolute;right:16px;top:-16px;background:#313338;border:1px solid #1e1f22;border-radius:4px;display:none;padding:0 2px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.msg:hover .msg-actions{display:flex}
+.msg-action{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:#b5bac1;cursor:pointer;border-radius:3px;font-size:16px}
+.msg-action:hover{background:#35373c;color:#dbdee1}
+
+/* Typing */
+.typing-bar{height:24px;padding:0 16px;display:flex;align-items:center;gap:4px;font-size:13px;color:#949ba4}
+.typing-dots{display:flex;gap:2px}
+.typing-dots span{width:4px;height:4px;border-radius:50%;background:#949ba4;animation:tbounce .8s infinite alternate}
+.typing-dots span:nth-child(2){animation-delay:.15s}
+.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes tbounce{to{opacity:.3;transform:translateY(-2px)}}
+
+/* === Input Area === */
+.input-wrap{padding:0 16px 24px}
+.input-box{background:#383a40;border-radius:8px;display:flex;align-items:flex-end;padding:0}
+.input-attach{width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:#b5bac1;cursor:pointer;flex-shrink:0;border-radius:8px 0 0 8px}
+.input-attach:hover{color:#dbdee1}
+.input-attach svg{width:24px;height:24px}
+.input-field{flex:1;padding:11px 0;font-size:16px;color:#dbdee1;line-height:1.375;min-height:44px}
+.input-field .placeholder{color:#6d6f78}
+.input-btns{display:flex;align-items:center;gap:2px;padding:0 8px;height:44px}
+.input-btn{width:32px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#b5bac1;cursor:pointer}
+.input-btn:hover{color:#dbdee1}
+.input-btn svg{width:24px;height:24px}
+</style>
+</head>
+<body>
+<div class="window">
+  <div class="titlebar">
+    <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+  </div>
+
+  <!-- Agent Rail -->
+  <div class="rail">
+    <div class="rail-item active">
+      <div class="rail-pill"></div>
+      <div class="rail-icon" style="background:#d97757">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#fff" stroke-width="1.5" fill="none"/></svg>
+        <div class="badge badge-on"></div>
+      </div>
+    </div>
+    <div class="rail-item">
+      <div class="rail-pill"></div>
+      <div class="rail-icon" style="background:#10a37f">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="badge badge-off"></div>
+      </div>
+    </div>
+    <div class="rail-item">
+      <div class="rail-pill"></div>
+      <div class="rail-icon" style="background:linear-gradient(135deg,#4285f4,#ea4335,#fbbc04,#34a853)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.64 5.64l2.12 2.12m8.49 8.49l2.12 2.12M18.36 5.64l-2.12 2.12M7.76 16.24l-2.12 2.12" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div class="badge badge-off"></div>
+      </div>
+    </div>
+    <div class="rail-sep"></div>
+    <div class="rail-item">
+      <div class="rail-pill"></div>
+      <div class="rail-icon" style="background:#d97757;opacity:.5">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#fff" stroke-width="1.5" fill="none"/></svg>
+        <div class="badge badge-off"></div>
+      </div>
+    </div>
+    <div class="rail-sep"></div>
+    <div class="rail-add">+</div>
+  </div>
+
+  <!-- Channel Sidebar -->
+  <div class="channels">
+    <div class="ch-header">
+      <h2>Claude Code</h2>
+      <span class="ch-badge">Online</span>
+    </div>
+    <div class="ch-body">
+      <div class="ch-cat"><svg viewBox="0 0 12 12"><path d="M2 4.5l4 3 4-3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg> Sessions</div>
+      <div class="ch-item active">
+        <span class="ch-hash">#</span>
+        <span class="ch-name">clawflow-desk</span>
+        <span class="ch-unread">3</span>
+      </div>
+      <div class="ch-item">
+        <span class="ch-hash">#</span>
+        <span class="ch-name">empx-gateway</span>
+      </div>
+      <div class="ch-item">
+        <span class="ch-hash">#</span>
+        <span class="ch-name">general</span>
+      </div>
+      <div class="ch-cat"><svg viewBox="0 0 12 12"><path d="M2 4.5l4 3 4-3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg> Configure</div>
+      <div class="ch-item"><span class="ch-hash" style="font-size:14px">🔑</span><span class="ch-name">Providers</span></div>
+      <div class="ch-item"><span class="ch-hash" style="font-size:14px">🔌</span><span class="ch-name">MCP Servers</span></div>
+      <div class="ch-item"><span class="ch-hash" style="font-size:14px">📝</span><span class="ch-name">Prompts</span></div>
+    </div>
+
+    <!-- User Panel -->
+    <div class="user-panel">
+      <div class="user-avatar-wrap">
+        <div class="user-avatar" style="background:#5865f2">K</div>
+        <div class="user-avatar-status"></div>
+      </div>
+      <div class="user-meta">
+        <div class="user-displayname">Ken</div>
+        <div class="user-tag">sonnet-4-5 · empx</div>
+      </div>
+      <div class="user-btns">
+        <div class="user-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a3 3 0 00-3 3v6a3 3 0 006 0V5a3 3 0 00-3-3zM19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.93V20H8a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07A7 7 0 0019 11z"/></svg></div>
+        <div class="user-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4a2 2 0 002 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+        <div class="user-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1115.6 12 3.6 3.6 0 0112 15.6z"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Chat -->
+  <div class="main">
+    <div class="chat-toolbar">
+      <span class="ct-hash">#</span>
+      <span class="ct-name">clawflow-desk</span>
+      <span class="ct-sep"></span>
+      <span class="ct-topic">Working on ~/refs/client/clawflow-desk · claude-sonnet-4-5</span>
+      <div class="ct-actions">
+        <div class="ct-btn">📌</div>
+        <div class="ct-btn">🔍</div>
+        <div class="ct-btn">📥</div>
+      </div>
+    </div>
+
+    <div class="messages">
+      <div class="msg-divider"><span>February 27, 2026</span></div>
+
+      <div class="msg" style="margin-top:16px">
+        <div class="msg-avatar" style="background:#5865f2">🔌</div>
+        <div class="msg-body">
+          <div class="msg-header">
+            <span class="msg-author" style="color:#5865f2">System</span>
+            <span class="msg-ts">Today at 00:18</span>
+          </div>
+          <div class="msg-content">Connected to MCP: <code>filesystem</code> <code>github</code> · Model: <code>claude-sonnet-4-5</code> via empx-gateway</div>
+        </div>
+      </div>
+
+      <div class="msg" style="margin-top:16px">
+        <div class="msg-avatar" style="background:#5865f2">K</div>
+        <div class="msg-body">
+          <div class="msg-header">
+            <span class="msg-author" style="color:#e9a0ff">Ken</span>
+            <span class="msg-ts">Today at 00:19</span>
+          </div>
+          <div class="msg-content">重构 Sidebar 组件，把 Agent 列表改成 Discord 风格，左边 icon rail + 右边 channel list</div>
+        </div>
+        <div class="msg-actions">
+          <div class="msg-action">😀</div>
+          <div class="msg-action">💬</div>
+          <div class="msg-action">📌</div>
+          <div class="msg-action">⋯</div>
+        </div>
+      </div>
+
+      <div class="msg" style="margin-top:16px">
+        <div class="msg-avatar" style="background:#d97757">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#fff" stroke-width="1.5"/></svg>
+        </div>
+        <div class="msg-body">
+          <div class="msg-header">
+            <span class="msg-author" style="color:#d97757">Claude</span>
+            <span style="font-size:10px;padding:1px 4px;border-radius:3px;background:#5865f2;color:#fff;font-weight:500;margin-left:4px;vertical-align:middle">BOT</span>
+            <span class="msg-ts">Today at 00:19</span>
+          </div>
+          <div class="msg-content">好的，重构 Sidebar 为 Discord 双栏布局。左侧 Agent Rail（图标 + 状态灯），右侧 Channel List（会话 + 配置）。</div>
+          <div class="msg-codeblock">
+            <div class="msg-codeblock-header">
+              <span class="msg-codeblock-lang">TypeScript</span>
+              <span class="msg-codeblock-copy">Copy</span>
+            </div>
+            <pre><span class="cm">// Agent Rail — Discord server icon style</span>
+<span class="kw">export function</span> <span class="fn">AgentRail</span>() {
+  <span class="kw">const</span> snap = <span class="fn">useSnapshot</span>(store);
+  <span class="kw">return</span> (
+    &lt;<span class="fn">aside</span> className=<span class="str">"agent-rail"</span>&gt;
+      {AGENTS.<span class="fn">map</span>(agent =&gt; (
+        &lt;<span class="fn">AgentIcon</span>
+          key={agent.id}
+          active={snap.activeAgentId === agent.id}
+          status={snap.sessions[agent.id]}
+        /&gt;
+      ))}
+    &lt;/aside&gt;
+  );
+}</pre>
+          </div>
+          <div class="msg-content" style="margin-top:6px">已更新 3 个文件，测试全过 ✅</div>
+        </div>
+      </div>
+
+      <div class="msg" style="margin-top:16px">
+        <div class="msg-avatar" style="background:#5865f2">K</div>
+        <div class="msg-body">
+          <div class="msg-header">
+            <span class="msg-author" style="color:#e9a0ff">Ken</span>
+            <span class="msg-ts">Today at 00:22</span>
+          </div>
+          <div class="msg-content">加个 session 概念，每个 Agent 可以有多个工作目录的 session</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="typing-bar">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+      <strong>Claude</strong>&nbsp;is thinking...
+    </div>
+
+    <!-- Input -->
+    <div class="input-wrap">
+      <div class="input-box">
+        <div class="input-attach">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"/></svg>
+        </div>
+        <div class="input-field"><span class="placeholder">Message #clawflow-desk</span></div>
+        <div class="input-btns">
+          <div class="input-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 11.5C2 6.81 5.81 3 10.5 3S19 6.81 19 11.5 15.19 20 10.5 20c-1.74 0-3.36-.52-4.71-1.42L2 20l1.42-3.79A8.39 8.39 0 012 11.5z"/></svg></div>
+          <div class="input-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
