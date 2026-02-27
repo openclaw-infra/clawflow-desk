@@ -10,6 +10,7 @@
 :root{--bg:#09090b;--fg:#fafafa;--muted:#a1a1aa;--border:#27272a;--card:#18181b;--primary:#3b82f6;--primary-hover:#2563eb;--green:#22c55e}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+a.dl-card{text-decoration:none}a.dl-card:hover{text-decoration:none}
 .container{max-width:960px;margin:0 auto;padding:0 24px}
 .hero{padding:80px 0 60px;text-align:center}
 .hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:13px;color:var(--muted);margin-bottom:24px}
@@ -59,11 +60,11 @@ footer a{color:var(--muted)}footer a:hover{color:var(--fg)}
 <div class="lang-sw"><button class="on" id="btn-en" onclick="setLang('en')">EN</button><button id="btn-zh" onclick="setLang('zh')">中文</button></div>
 
 <section class="hero"><div class="container">
-<div class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#3b82f6"/></svg> <span data-en="v0.1.0 — Open Source" data-zh="v0.1.0 — 开源免费"></span></div>
-<h1 data-en="Manage your AI CLIs<br>with <em>ClawFlow Desk</em>" data-zh="用 <em>ClawFlow Desk</em><br>管理你的 AI CLI"></h1>
-<p data-en="One app to configure Claude Code, Codex, and Gemini CLI. Switch providers, manage MCP servers, edit prompts — all from a lightweight desktop app." data-zh="一个应用搞定 Claude Code、Codex、Gemini CLI 配置。切换 Provider、管理 MCP 服务器、编辑 Prompt — 全在一个轻量桌面应用里。"></p>
+<div class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#3b82f6"/></svg> <span data-en="v0.1.0 — Open Source" data-zh="v0.1.0 — 开源免费">v0.1.0 — Open Source</span></div>
+<h1 data-en="Manage your AI CLIs<br>with <em>ClawFlow Desk</em>" data-zh="用 <em>ClawFlow Desk</em><br>管理你的 AI CLI">Manage your AI CLIs<br>with <em>ClawFlow Desk</em></h1>
+<p data-en="One app to configure Claude Code, Codex, and Gemini CLI. Switch providers, manage MCP servers, edit prompts — all from a lightweight desktop app." data-zh="一个应用搞定 Claude Code、Codex、Gemini CLI 配置。切换 Provider、管理 MCP 服务器、编辑 Prompt — 全在一个轻量桌面应用里。">One app to configure Claude Code, Codex, and Gemini CLI. Switch providers, manage MCP servers, edit prompts — all from a lightweight desktop app.</p>
 <div class="hero-actions">
-<a href="#download" class="btn btn-primary" data-en="⬇ Download" data-zh="⬇ 下载"></a>
+<a href="#download" class="btn btn-primary" data-en="⬇ Download" data-zh="⬇ 下载">⬇ Download</a>
 <a href="https://github.com/openclaw-infra/clawflow-desk" class="btn btn-outline">GitHub →</a>
 </div>
 <div style="margin-top:48px;max-width:960px;margin-left:auto;margin-right:auto">
@@ -72,39 +73,39 @@ footer a{color:var(--muted)}footer a:hover{color:var(--fg)}
 </div></section>
 
 <section class="stats"><div class="container"><div class="stats-grid">
-<div><div class="sv">3</div><div class="sl" data-en="CLI Tools Supported" data-zh="支持的 CLI 工具"></div></div>
-<div><div class="sv">116</div><div class="sl" data-en="Tests Passing" data-zh="测试通过"></div></div>
-<div><div class="sv">4</div><div class="sl" data-en="Platforms" data-zh="平台支持"></div></div>
-<div><div class="sv">&lt;50ms</div><div class="sl" data-en="Startup Time" data-zh="启动速度"></div></div>
+<div><div class="sv">3</div><div class="sl" data-en="CLI Tools Supported" data-zh="支持的 CLI 工具">CLI Tools Supported</div></div>
+<div><div class="sv">116</div><div class="sl" data-en="Tests Passing" data-zh="测试通过">Tests Passing</div></div>
+<div><div class="sv">4</div><div class="sl" data-en="Platforms" data-zh="平台支持">Platforms</div></div>
+<div><div class="sv">&lt;50ms</div><div class="sl" data-en="Startup Time" data-zh="启动速度">Startup Time</div></div>
 </div></div></section>
 
 <section class="sec"><div class="container" style="text-align:center">
-<h2 data-en="See it in action" data-zh="看看效果"></h2>
-<p class="sub" data-en="From idea to production — fully AI-powered, zero manual intervention" data-zh="从需求到上线，全程 AI 驱动，零人工干预"></p>
+<h2 data-en="See it in action" data-zh="看看效果">See it in action</h2>
+<p class="sub" data-en="From idea to production — fully AI-powered, zero manual intervention" data-zh="从需求到上线，全程 AI 驱动，零人工干预">From idea to production — fully AI-powered, zero manual intervention</p>
 <video controls playsinline preload="metadata" poster="designs/discord-full.png" style="width:100%;max-width:960px;border-radius:12px;box-shadow:0 25px 60px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06)">
 <source src="clawflow-promo.mp4" type="video/mp4">
 </video>
 </div></section>
 
 <section class="sec"><div class="container">
-<h2 data-en="Everything you need" data-zh="你需要的一切"></h2>
-<p class="sub" data-en="A complete configuration manager for AI coding assistants" data-zh="AI 编程助手的完整配置管理器"></p>
+<h2 data-en="Everything you need" data-zh="你需要的一切">Everything you need</h2>
+<p class="sub" data-en="A complete configuration manager for AI coding assistants" data-zh="AI 编程助手的完整配置管理器">A complete configuration manager for AI coding assistants</p>
 <div class="grid2">
-<div><img src="designs/discord-polished.png" alt="Agent Interface" style="width:100%;border-radius:10px;border:1px solid #27272a"><p style="text-align:center;font-size:13px;color:#a1a1aa;margin-top:8px" data-en="Discord-style Agent Interface" data-zh="Discord 风格 Agent 界面"></p></div>
-<div><img src="designs/mcp.png" alt="MCP Servers" style="width:100%;border-radius:10px;border:1px solid #27272a"><p style="text-align:center;font-size:13px;color:#a1a1aa;margin-top:8px" data-en="MCP Server Management" data-zh="MCP 服务器管理"></p></div>
+<div><img src="designs/discord-polished.png" alt="Agent Interface" style="width:100%;border-radius:10px;border:1px solid #27272a"><p style="text-align:center;font-size:13px;color:#a1a1aa;margin-top:8px" data-en="Discord-style Agent Interface" data-zh="Discord 风格 Agent 界面">Discord-style Agent Interface</p></div>
+<div><img src="designs/mcp.png" alt="MCP Servers" style="width:100%;border-radius:10px;border:1px solid #27272a"><p style="text-align:center;font-size:13px;color:#a1a1aa;margin-top:8px" data-en="MCP Server Management" data-zh="MCP 服务器管理">MCP Server Management</p></div>
 </div>
 <div class="grid3">
-<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-en="Provider Management" data-zh="Provider 管理"></h3><p data-en="Add multiple API providers per CLI. Switch between them with one click. Atomic writes protect your config files." data-zh="每个 CLI 支持多个 API Provider，一键切换。原子写入保护配置文件不损坏。"></p></div>
-<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2v6m0 8v6M4.93 4.93l4.24 4.24m5.66 5.66l4.24 4.24M2 12h6m8 0h6M4.93 19.07l4.24-4.24m5.66-5.66l4.24-4.24" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/></svg></div><h3 data-en="MCP Servers" data-zh="MCP 服务器"></h3><p data-en="Add, edit, enable/disable MCP servers across all three CLIs. Full support for commands, args, and environment variables." data-zh="跨三个 CLI 添加、编辑、启用/禁用 MCP 服务器。完整支持命令、参数和环境变量。"></p></div>
-<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 2 14 8 20 8" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="16" y1="13" x2="8" y2="13" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="17" x2="8" y2="17" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/></svg></div><h3 data-en="Prompt Editor" data-zh="Prompt 编辑器"></h3><p data-en="Edit CLAUDE.md, AGENTS.md, and GEMINI.md directly. Character and line count, with instant save." data-zh="直接编辑 CLAUDE.md、AGENTS.md、GEMINI.md。字符和行数统计，即时保存。"></p></div>
-<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-en="Process Manager" data-zh="进程管理"></h3><p data-en="Start, stop, and monitor CLI processes. See uptime, PID, and status at a glance." data-zh="启动、停止、监控 CLI 进程。一目了然查看运行时间、PID 和状态。"></p></div>
-<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 21 17 13 7 13 7 21" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 3 7 8 15 8" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-en="Import / Export" data-zh="导入 / 导出"></h3><p data-en="Backup all your configurations to a single JSON file. Restore on any machine in seconds." data-zh="所有配置备份到一个 JSON 文件。任何机器上秒级恢复。"></p></div>
-<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="#ec4899" stroke-width="1.5"/><line x1="8" y1="21" x2="16" y2="21" stroke="#ec4899" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="#ec4899" stroke-width="1.5" stroke-linecap="round"/></svg></div><h3 data-en="System Tray" data-zh="系统托盘"></h3><p data-en="Quick-switch providers from the system tray without opening the app. Always accessible." data-zh="从系统托盘快速切换 Provider，无需打开应用。随时可用。"></p></div>
+<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-en="Provider Management" data-zh="Provider 管理">Provider Management</h3><p data-en="Add multiple API providers per CLI. Switch between them with one click. Atomic writes protect your config files." data-zh="每个 CLI 支持多个 API Provider，一键切换。原子写入保护配置文件不损坏。">Add multiple API providers per CLI. Switch between them with one click. Atomic writes protect your config files.</p></div>
+<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2v6m0 8v6M4.93 4.93l4.24 4.24m5.66 5.66l4.24 4.24M2 12h6m8 0h6M4.93 19.07l4.24-4.24m5.66-5.66l4.24-4.24" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/></svg></div><h3 data-en="MCP Servers" data-zh="MCP 服务器">MCP Servers</h3><p data-en="Add, edit, enable/disable MCP servers across all three CLIs. Full support for commands, args, and environment variables." data-zh="跨三个 CLI 添加、编辑、启用/禁用 MCP 服务器。完整支持命令、参数和环境变量。">Add, edit, enable/disable MCP servers across all three CLIs. Full support for commands, args, and environment variables.</p></div>
+<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 2 14 8 20 8" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="16" y1="13" x2="8" y2="13" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="17" x2="8" y2="17" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/></svg></div><h3 data-en="Prompt Editor" data-zh="Prompt 编辑器">Prompt Editor</h3><p data-en="Edit CLAUDE.md, AGENTS.md, and GEMINI.md directly. Character and line count, with instant save." data-zh="直接编辑 CLAUDE.md、AGENTS.md、GEMINI.md。字符和行数统计，即时保存。">Edit CLAUDE.md, AGENTS.md, and GEMINI.md directly. Character and line count, with instant save.</p></div>
+<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-en="Process Manager" data-zh="进程管理">Process Manager</h3><p data-en="Start, stop, and monitor CLI processes. See uptime, PID, and status at a glance." data-zh="启动、停止、监控 CLI 进程。一目了然查看运行时间、PID 和状态。">Start, stop, and monitor CLI processes. See uptime, PID, and status at a glance.</p></div>
+<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 21 17 13 7 13 7 21" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 3 7 8 15 8" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-en="Import / Export" data-zh="导入 / 导出">Import / Export</h3><p data-en="Backup all your configurations to a single JSON file. Restore on any machine in seconds." data-zh="所有配置备份到一个 JSON 文件。任何机器上秒级恢复。">Backup all your configurations to a single JSON file. Restore on any machine in seconds.</p></div>
+<div class="card"><div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="#ec4899" stroke-width="1.5"/><line x1="8" y1="21" x2="16" y2="21" stroke="#ec4899" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="#ec4899" stroke-width="1.5" stroke-linecap="round"/></svg></div><h3 data-en="System Tray" data-zh="系统托盘">System Tray</h3><p data-en="Quick-switch providers from the system tray without opening the app. Always accessible." data-zh="从系统托盘快速切换 Provider，无需打开应用。随时可用。">Quick-switch providers from the system tray without opening the app. Always accessible.</p></div>
 </div>
 </div></section>
 
 <section class="sec"><div class="container">
-<h2 data-en="Supported CLIs" data-zh="支持的 CLI"></h2>
+<h2 data-en="Supported CLIs" data-zh="支持的 CLI">Supported CLIs</h2>
 <div class="grid3">
 <div class="cli-card"><div class="logo" style="background:#d9775722"><svg viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#d97757" stroke-width="1.5"/></svg></div><div class="cn">Claude Code</div><div class="cb">by Anthropic</div><div class="cf"><div>~/.claude/settings.json</div><div>~/.claude.json (MCP)</div><div>~/.claude/CLAUDE.md</div></div></div>
 <div class="cli-card"><div class="logo" style="background:#10a37f22"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#10a37f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="cn">Codex</div><div class="cb">by OpenAI</div><div class="cf"><div>~/.codex/auth.json</div><div>~/.codex/config.toml (MCP)</div><div>~/.codex/AGENTS.md</div></div></div>
@@ -113,7 +114,7 @@ footer a{color:var(--muted)}footer a:hover{color:var(--fg)}
 </div></section>
 
 <section class="sec" style="border-top:1px solid var(--border)"><div class="container" style="text-align:center">
-<p style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:32px" data-en="Powered by" data-zh="技术驱动"></p>
+<p style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:32px" data-en="Powered by" data-zh="技术驱动">Powered by</p>
 <div style="display:flex;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap;opacity:.6">
 <!-- Anthropic -->
 <div style="display:flex;align-items:center;gap:8px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#d97757" stroke-width="1.5"/></svg><span style="color:#a1a1aa;font-size:14px;font-weight:500">Anthropic</span></div>
@@ -131,12 +132,12 @@ footer a{color:var(--muted)}footer a:hover{color:var(--fg)}
 </div></section>
 
 <section class="sec" id="download"><div class="container">
-<h2 data-en="Download" data-zh="下载"></h2>
-<p class="sub" data-en="Built with Electrobun — lightweight, fast, native" data-zh="基于 Electrobun 构建 — 轻量、快速、原生体验"></p>
+<h2 data-en="Download" data-zh="下载">Download</h2>
+<p class="sub" data-en="Built with Electrobun — lightweight, fast, native" data-zh="基于 Electrobun 构建 — 轻量、快速、原生体验">Built with Electrobun — lightweight, fast, native</p>
 <div class="grid4">
 <a href="https://github.com/openclaw-infra/clawflow-desk/actions" class="dl-card"><div class="oi"><svg width="32" height="32" viewBox="0 0 24 24" fill="#a1a1aa"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></div><div class="on">macOS</div><div class="oa">Apple Silicon</div></a>
 <a href="https://github.com/openclaw-infra/clawflow-desk/actions" class="dl-card"><div class="oi"><svg width="32" height="32" viewBox="0 0 24 24" fill="#a1a1aa"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg></div><div class="on">macOS</div><div class="oa">Intel</div></a>
-<a href="https://github.com/openclaw-infra/clawflow-desk/actions" class="dl-card"><div class="oi"><svg width="32" height="32" viewBox="0 0 24 24" fill="#a1a1aa"><path d="M12.504 0c-.155 0-.311.002-.465.014-.653.052-1.27.246-1.823.542-.554.296-1.04.695-1.434 1.166-.394.47-.694 1.013-.882 1.606-.188.593-.264 1.224-.222 1.86.042.636.2 1.26.468 1.84.268.58.64 1.107 1.1 1.55.46.443.998.79 1.59 1.02.592.23 1.224.34 1.864.32.64-.02 1.268-.16 1.844-.41.576-.25 1.092-.61 1.52-1.06.428-.45.764-.98.99-1.56.226-.58.34-1.2.34-1.84 0-.64-.114-1.26-.34-1.84-.226-.58-.562-1.11-.99-1.56-.428-.45-.944-.81-1.52-1.06C13.772.16 13.144.02 12.504 0zM12 5.5c.276 0 .5.224.5.5v5.5H18c.276 0 .5.224.5.5s-.224.5-.5.5h-6a.5.5 0 01-.5-.5V6c0-.276.224-.5.5-.5z"/><path d="M12 22c-1.1 0-2-.9-2-2h4c0 1.1-.9 2-2 2zm-5.293-3.707A1 1 0 017 17h10a1 1 0 01.707 1.707l-.707.707H7.414l-.707-.707z"/></svg></div><div class="on">Linux</div><div class="oa">x64</div></a>
+<a href="https://github.com/openclaw-infra/clawflow-desk/actions" class="dl-card"><div class="oi"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="#a1a1aa" stroke-width="1.5"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="#a1a1aa" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="10" r="1" fill="#a1a1aa"/><circle cx="15" cy="10" r="1" fill="#a1a1aa"/></svg></div><div class="on">Linux</div><div class="oa">x64</div></a>
 <a href="https://github.com/openclaw-infra/clawflow-desk/actions" class="dl-card"><div class="oi"><svg width="32" height="32" viewBox="0 0 24 24" fill="#a1a1aa"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg></div><div class="on">Windows</div><div class="oa">x64</div></a>
 </div>
 <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)" data-en='Downloads from GitHub Actions artifacts. <a href="https://github.com/openclaw-infra/clawflow-desk/releases">Releases page →</a>' data-zh='从 GitHub Actions 构建产物下载。<a href="https://github.com/openclaw-infra/clawflow-desk/releases">发布页 →</a>'></p>
