@@ -16,7 +16,7 @@ export function Sidebar() {
 	return (
 		<div className="flex h-full">
 			{/* Agent Rail — Discord server icon style */}
-			<div className="w-[72px] bg-[#111113] border-r border-border flex flex-col items-center pt-2 gap-2">
+			<div className="w-[72px] bg-[#1e1f22] border-r border-border flex flex-col items-center pt-2 gap-2">
 				{snap.agents.map((agent) => {
 					const isActive = snap.activeAgentId === agent.id && snap.view === "terminal";
 					const hasSession = !!snap.terminalSessions[agent.id];
@@ -41,7 +41,7 @@ export function Sidebar() {
 								<span>{agent.icon || "🤖"}</span>
 								{/* Status dot */}
 								{hasSession && (
-									<span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-green-500 border-[3px] border-[#111113]" />
+									<span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-green-500 border-[3px] border-[#1e1f22]" />
 								)}
 							</button>
 						</div>

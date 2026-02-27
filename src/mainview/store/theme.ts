@@ -39,7 +39,7 @@ export function setTheme(theme: Theme) {
 }
 
 export function initTheme() {
-	let saved: Theme = "system";
+	let saved: Theme = "dark";
 	try {
 		const s = localStorage.getItem("clawflow-theme") as Theme | null;
 		if (s === "light" || s === "dark" || s === "system") saved = s;

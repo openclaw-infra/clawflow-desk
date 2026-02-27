@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+	/* Light theme */
 	--color-background: oklch(1 0 0);
 	--color-foreground: oklch(0.145 0 0);
 	--color-primary: oklch(0.205 0 0);
@@ -16,23 +17,36 @@
 	--color-ring: oklch(0.708 0 0);
 	--color-success: oklch(0.627 0.194 149.214);
 	--radius: 0.625rem;
+	/* Discord-specific tokens */
+	--color-discord-brand: #5865f2;
+	--color-discord-green: #57f287;
+	--color-discord-yellow: #fee75c;
+	--color-discord-red: #ed4245;
 }
 
+/* Discord dark theme — real colors from Discord */
 .dark {
-	--color-background: oklch(0.145 0 0);
-	--color-foreground: oklch(0.985 0 0);
-	--color-primary: oklch(0.985 0 0);
-	--color-primary-foreground: oklch(0.205 0 0);
-	--color-secondary: oklch(0.269 0 0);
-	--color-secondary-foreground: oklch(0.985 0 0);
-	--color-muted: oklch(0.269 0 0);
-	--color-muted-foreground: oklch(0.708 0 0);
-	--color-accent: oklch(0.269 0 0);
-	--color-accent-foreground: oklch(0.985 0 0);
-	--color-destructive: oklch(0.704 0.191 22.216);
-	--color-border: oklch(0.269 0 0);
-	--color-ring: oklch(0.556 0 0);
-	--color-success: oklch(0.627 0.194 149.214);
+	/* #313338 main bg */
+	--color-background: #313338;
+	/* #f2f3f5 text */
+	--color-foreground: #f2f3f5;
+	/* #5865f2 brand purple */
+	--color-primary: #5865f2;
+	--color-primary-foreground: #ffffff;
+	/* #2b2d31 secondary bg (sidebar) */
+	--color-secondary: #2b2d31;
+	--color-secondary-foreground: #f2f3f5;
+	/* #2b2d31 muted */
+	--color-muted: #2b2d31;
+	--color-muted-foreground: #949ba4;
+	/* #383a40 accent (hover) */
+	--color-accent: #383a40;
+	--color-accent-foreground: #f2f3f5;
+	--color-destructive: #ed4245;
+	/* #1e1f22 border (darkest) */
+	--color-border: #1e1f22;
+	--color-ring: #5865f2;
+	--color-success: #57f287;
 }
 
 * {
@@ -45,10 +59,11 @@
 body {
 	background-color: var(--color-background);
 	color: var(--color-foreground);
-	font-family: Inter, system-ui, -apple-system, sans-serif;
+	font-family: "gg sans", "Noto Sans", Inter, system-ui, -apple-system, sans-serif;
 	-webkit-font-smoothing: antialiased;
 }
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-muted-foreground); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #b5bac1; }
